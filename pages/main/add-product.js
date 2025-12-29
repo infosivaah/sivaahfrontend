@@ -37,7 +37,7 @@ export default function AddProduct() {
   /* ---------------- FETCH CATEGORIES ---------------- */
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/categories")
+    fetch("https://sivaahbackend.onrender.com/api/categories")
       .then(res => res.json())
       .then(setCategories)
       .catch(console.error);
@@ -91,7 +91,7 @@ export default function AddProduct() {
     const formData = new FormData();
     images.forEach(img => formData.append("images", img));
 
-    const res = await fetch("http://localhost:5000/api/upload", {
+    const res = await fetch("https://sivaahbackend.onrender.com/api/upload", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
@@ -138,7 +138,7 @@ export default function AddProduct() {
       };
 
       const res = await fetch(
-        "http://localhost:5000/api/products",
+        "https://sivaahbackend.onrender.com/api/products",
         {
           method: "POST",
           headers: {

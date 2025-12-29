@@ -19,7 +19,7 @@ export default function ProductPage() {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/slug/${slug}`
+          `https://sivaahbackend.onrender.com/api/products/slug/${slug}`
         );
 
         if (!res.ok) throw new Error("Product not found");

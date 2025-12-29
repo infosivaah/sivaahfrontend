@@ -12,15 +12,15 @@ export default function Home() {
   const [carousel, setCarousel] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("https://sivaahbackend.onrender.com/api/products")
       .then(res => res.json())
       .then(setProducts);
 
-    fetch("http://localhost:5000/api/categories")
+    fetch("https://sivaahbackend.onrender.com/api/categories")
       .then(res => res.json())
       .then(setCategories);
 
-    fetch("http://localhost:5000/api/collections/carousel")
+    fetch("https://sivaahbackend.onrender.com/api/collections/carousel")
       .then(res => res.json())
       .then(data => setCarousel(data?.imageList || []));
   }, []);

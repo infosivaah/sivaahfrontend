@@ -13,7 +13,7 @@ export default function AdminProducts() {
   useEffect(() => {
     if (!token) router.push("/admin/login");
 
-    fetch("http://localhost:5000/api/products", {
+    fetch("https://sivaahbackend.onrender.com/api/products", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -21,7 +21,7 @@ export default function AdminProducts() {
   }, []);
 
   const deleteProduct = async (id) => {
-    await fetch(`http://localhost:5000/api/products/${id}`, {
+    await fetch(`https://sivaahbackend.onrender.com/api/products/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`

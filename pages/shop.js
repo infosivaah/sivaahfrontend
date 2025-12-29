@@ -14,8 +14,8 @@ export default function ShopPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://localhost:5000/api/products").then(r => r.json()),
-      fetch("http://localhost:5000/api/categories").then(r => r.json())
+      fetch("https://sivaahbackend.onrender.com/api/products").then(r => r.json()),
+      fetch("https://sivaahbackend.onrender.com/api/categories").then(r => r.json())
     ])
       .then(([productsData, categoriesData]) => {
         setProducts(productsData);
