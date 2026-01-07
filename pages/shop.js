@@ -1,14 +1,30 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import ProductGridSkeleton from "../components/skeletons/ProductGridSkeleton";
 
-export default function ShopPage({
-  products,
-  categories
-}) {
+export default function ShopPage({ products, categories }) {
   const router = useRouter();
   const { category, maxPrice, search, sort } = router.query;
+
+  /* ---------------- UX LOADING STATE ---------------- */
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const start = () => setLoading(true);
+    const end = () => setLoading(false);
+
+    router.events.on("routeChangeStart", start);
+    router.events.on("routeChangeComplete", end);
+    router.events.on("routeChangeError", end);
+
+    return () => {
+      router.events.off("routeChangeStart", start);
+      router.events.off("routeChangeComplete", end);
+      router.events.off("routeChangeError", end);
+    };
+  }, [router]);
 
   /* ---------------- FILTER LOGIC ---------------- */
 
@@ -51,24 +67,25 @@ export default function ShopPage({
     const params = new URLSearchParams(router.query);
     if (!value) params.delete(key);
     else params.set(key, value);
-    router.push(`/shop?${params.toString()}`, undefined, { shallow: true });
+
+    router.push(`/shop?${params.toString()}`, undefined, {
+      shallow: true
+    });
   };
 
   return (
     <>
       {/* ================= SEO ================= */}
       <Head>
-        <title>
-          Shop 925 Silver Jewellery | SIVAAH
-        </title>
+        <title>Shop 925 Silver Jewellery | SIVAAH</title>
         <meta
           name="description"
-          content="Explore premium 925 silver jewellery by SIVAAH. Filter by category, price, and intention to find jewellery that resonates with you."
+          content="Explore premium 925 silver jewellery by SIVAAH. Filter by category, price and intention to find jewellery that resonates with you."
         />
         <link rel="canonical" href="https://sivaah.in/shop" />
       </Head>
 
-      <h1 className="mb-3 fw-semibold text-center">
+      <h1 className="mb-4 fw-semibold text-center">
         Shop Jewellery
       </h1>
 
@@ -87,7 +104,7 @@ export default function ShopPage({
           <div className="col-md-4">
             <input
               className="form-control"
-              placeholder="Search jewellery, intention, category..."
+              placeholder="Search jewellery, category..."
               defaultValue={search || ""}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -178,8 +195,10 @@ export default function ShopPage({
         ))}
       </div>
 
-      {/* ================= PRODUCTS / EMPTY STATE ================= */}
-      {filteredProducts.length === 0 ? (
+      {/* ================= PRODUCTS / SKELETON / EMPTY ================= */}
+      {loading ? (
+        <ProductGridSkeleton />
+      ) : filteredProducts.length === 0 ? (
         <div
           className="d-flex flex-column align-items-center justify-content-center text-center"
           style={{ minHeight: "50vh" }}
@@ -213,19 +232,15 @@ export default function ShopPage({
 }
 
 /* ===============================
-   SERVER SIDE DATA FETCH
+   SERVER SIDE DATA FETCH (SEO)
 ================================ */
 
 export async function getServerSideProps() {
   try {
     const [productsRes, categoriesRes] =
       await Promise.all([
-        fetch(
-          "https://sivaahbackend.onrender.com/api/products"
-        ),
-        fetch(
-          "https://sivaahbackend.onrender.com/api/categories"
-        )
+        fetch("https://sivaahbackend.onrender.com/api/products"),
+        fetch("https://sivaahbackend.onrender.com/api/categories")
       ]);
 
     const products = await productsRes.json();

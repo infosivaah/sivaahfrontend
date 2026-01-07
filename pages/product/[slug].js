@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
+import ProductSkeleton from "../../components/skeletons/ProductSkeleton";
 
 export default function ProductPage() {
   const router = useRouter();
@@ -39,9 +40,11 @@ export default function ProductPage() {
 
   /* ---------------- LOADING / ERROR ---------------- */
 
-  if (loading) {
-    return <p className="text-center mt-5">Loading product...</p>;
-  }
+
+if (loading) {
+  return <ProductSkeleton />;
+}
+
 
   if (!product) {
     return <p className="text-center mt-5">Product not found</p>;
