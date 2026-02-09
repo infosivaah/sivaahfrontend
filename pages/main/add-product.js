@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import imageCompression from "browser-image-compression";
 
@@ -17,6 +17,8 @@ export default function AddProduct() {
   /* ---------------- STATES ---------------- */
 
   const [categories, setCategories] = useState([]);
+  const [silverRate, setSilverRate] = useState(null); // 🔥 GLOBAL RATE
+
   const [images, setImages] = useState([]);
   const [preview, setPreview] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,12 +27,16 @@ export default function AddProduct() {
     name: "",
     subtitle: "",
     emotion: "Protection",
-    category: "",          // ✅ category NAME
+    category: "",
     description: "",
     benefits: "",
-    price: "",
+
+    grams: "",
+    labourPerGram: "",
+
     mrp: "",
     stock: "",
+
     isActive: true
   });
 
@@ -40,6 +46,15 @@ export default function AddProduct() {
     fetch("https://sivaahbackend.onrender.com/api/categories")
       .then(res => res.json())
       .then(setCategories)
+      .catch(console.error);
+  }, []);
+
+  /* ---------------- FETCH SILVER RATE ---------------- */
+
+  useEffect(() => {
+    fetch("https://sivaahbackend.onrender.com/api/rate")
+      .then(res => res.json())
+      .then(data => setSilverRate(data.rate))
       .catch(console.error);
   }, []);
 
@@ -58,6 +73,20 @@ export default function AddProduct() {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
+
+  /* ---------------- AUTO PRICE CALCULATION ---------------- */
+
+  const calculatedPrice = useMemo(() => {
+    if (!silverRate || !form.grams || !form.labourPerGram) return "";
+
+    const grams = Number(form.grams);
+    const labour = Number(form.labourPerGram);
+
+    return Math.round(
+      grams * silverRate +
+      grams * labour
+    );
+  }, [silverRate, form.grams, form.labourPerGram]);
 
   /* ---------------- SMART IMAGE HANDLER ---------------- */
 
@@ -110,9 +139,11 @@ export default function AddProduct() {
   const submitProduct = async () => {
     if (
       !form.name ||
-      !form.price ||
       !form.stock ||
       !form.category ||
+      !form.grams ||
+      !form.labourPerGram ||
+      !calculatedPrice ||
       images.length === 0
     ) {
       alert("❌ Please fill all required fields");
@@ -126,14 +157,22 @@ export default function AddProduct() {
 
       const payload = {
         ...form,
-        slug: generateSlug(form.name), // ✅ AUTO SLUG
+
+        slug: generateSlug(form.name),
+
         benefits: form.benefits
           .split(",")
           .map(b => b.trim())
           .filter(Boolean),
-        price: Number(form.price),
+
+        grams: Number(form.grams),
+        labourPerGram: Number(form.labourPerGram),
+
+        price: calculatedPrice, // 🔥 FINAL PRICE SAVED
+
         mrp: Number(form.mrp),
         stock: Number(form.stock),
+
         images: imageUrls
       };
 
@@ -167,6 +206,12 @@ export default function AddProduct() {
     <div className="container mt-5">
       <h1>Add Product</h1>
 
+      {!silverRate && (
+        <p className="text-danger">
+          ⚠️ Silver rate not loaded yet.
+        </p>
+      )}
+
       <input
         className="form-control mb-2"
         placeholder="Name *"
@@ -181,7 +226,7 @@ export default function AddProduct() {
         onChange={handleChange}
       />
 
-      {/* CATEGORY (NAME STORED) */}
+      {/* CATEGORY */}
       <select
         className="form-control mb-2"
         name="category"
@@ -196,23 +241,29 @@ export default function AddProduct() {
         ))}
       </select>
 
-      <select
+      {/* WEIGHT + LABOUR */}
+
+      <input
         className="form-control mb-2"
-        name="emotion"
+        name="grams"
+        placeholder="Weight (grams)"
+        type="number"
         onChange={handleChange}
-      >
-        <option>Protection</option>
-        <option>Strength</option>
-        <option>Abundance</option>
-        <option>Balance</option>
-        <option>Healing</option>
-        <option>Love</option>
-        <option>Peace</option>
-        <option>Focus</option>
-        <option>Grounding</option>
-        <option>Good Luck</option>
-        <option>Care</option>
-      </select>
+      />
+
+      <input
+        className="form-control mb-2"
+        name="labourPerGram"
+        placeholder="Labour ₹ per gram"
+        type="number"
+        onChange={handleChange}
+      />
+
+      {/* 💰 AUTO PRICE */}
+
+      <div className="alert alert-light border fw-semibold">
+        Price (Auto): ₹ {calculatedPrice || "—"}
+      </div>
 
       <textarea
         className="form-control mb-2"
@@ -225,14 +276,6 @@ export default function AddProduct() {
         className="form-control mb-2"
         placeholder="Benefits (comma separated)"
         name="benefits"
-        onChange={handleChange}
-      />
-
-      <input
-        className="form-control mb-2"
-        placeholder="Price *"
-        name="price"
-        type="number"
         onChange={handleChange}
       />
 

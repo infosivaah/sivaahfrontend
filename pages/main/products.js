@@ -33,6 +33,13 @@ export default function AdminProducts() {
 
   return (
     <div className="container mt-5">
+      <button
+  className="btn btn-outline-dark mb-3"
+  onClick={() => router.push("/main/update-rate")}
+>
+  Update Silver Rate
+</button>
+
         <button
   className="btn btn-dark mb-4"
   onClick={() => router.push("/main/add-product")}
