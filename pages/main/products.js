@@ -11,7 +11,7 @@ export default function AdminProducts() {
       : null;
 
   useEffect(() => {
-    if (!token) router.push("/admin/login");
+    if (!token) router.push("/main/login");
 
     fetch("https://sivaahbackend.onrender.com/api/products", {
       headers: { Authorization: `Bearer ${token}` }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FaInstagram, FaFacebookF, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -62,34 +63,52 @@ export default function Footer() {
             <h6 className="footer-title">Get in Touch</h6>
 
             <ul className="list-unstyled footer-links mt-3">
+              {/* Email */}
               <li>
-                📧{" "}
+                <FaEnvelope className="me-2" />
                 <a href="mailto:sivaahofficials@gmail.com">
                   infosivaah@gmail.com
                 </a>
               </li>
 
+              {/* WhatsApp */}
               <li className="mt-2">
-                💬{" "}
+                <FaWhatsapp className="me-2" />
                 <a
                   href="https://wa.me/918090565000"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   +91 80905 65000
                 </a>
               </li>
 
-              <li className="mt-2 footer-address">
-                Shobha Silvers  
-                <br />
-                Near Purani Sabji Mandi  
-                <br />
-                Nawabganj, Gonda  
-                <br />
-                Uttar Pradesh – 271303
+              {/* Instagram */}
+              <li className="mt-2">
+                <FaInstagram className="me-2" />
+                <a
+                  href="https://www.instagram.com/sivaah.in?igsh=d3VuZ21jcWNkbXph"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+              </li>
+
+              {/* Facebook */}
+              <li className="mt-2">
+                <FaFacebookF className="me-2" />
+                <a
+                  href="https://www.facebook.com/share/1ECXUJp7cJ/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Facebook
+                </a>
               </li>
             </ul>
           </div>
+
         </div>
 
         {/* MAP */}
