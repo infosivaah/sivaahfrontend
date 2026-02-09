@@ -67,7 +67,30 @@ if (loading) {
       <Head>
         <title>{product.name} – 925 Silver Jewellery</title>
         <meta name="description" content={product.subtitle} />
-
+{/* JSON-LD Structured Data for Google */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": product.name,
+        "image": product.images,
+        "description": product.description,
+        "brand": {
+          "@type": "Brand",
+          "name": "Sivaah"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "INR",
+          "price": product.price,
+          "availability": "https://schema.org/InStock", // Tells Google "It's ready to buy!"
+          "url": `https://www.sivaah.in/product/${slug}` // Replace with your actual domain
+        }
+      }),
+    }}
+  />
         <meta property="og:title" content={product.name} />
         <meta property="og:description" content={product.subtitle} />
         <meta property="og:image" content={product.images?.[0]} />
