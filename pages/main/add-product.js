@@ -240,6 +240,25 @@ export default function AddProduct() {
           </option>
         ))}
       </select>
+{/* EMOTION */}
+<select
+  className="form-control mb-2"
+  name="emotion"
+  value={form.emotion}
+  onChange={handleChange}
+>
+  <option value="Protection">Protection</option>
+  <option value="Strength">Strength</option>
+  <option value="Abundance">Abundance</option>
+  <option value="Balance">Balance</option>
+  <option value="Healing">Healing</option>
+  <option value="Love">Love</option>
+  <option value="Peace">Peace</option>
+  <option value="Focus">Focus</option>
+  <option value="Grounding">Grounding</option>
+  <option value="Good Luck">Good Luck</option>
+  <option value="Care">Care</option>
+</select>
 
       {/* WEIGHT + LABOUR */}
 
