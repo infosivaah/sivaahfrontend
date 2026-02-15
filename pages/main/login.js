@@ -16,6 +16,7 @@ export default function AdminLogin() {
     const data = await res.json();
 
     if (res.ok) {
+      
       localStorage.setItem("token", data.token);
       router.push("/main/products");
     } else {

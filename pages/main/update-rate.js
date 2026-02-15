@@ -5,8 +5,6 @@ export default function UpdateRate() {
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
-  const [token, setToken] = useState(null);
-
   const [rate, setRate] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -17,14 +15,11 @@ export default function UpdateRate() {
   useEffect(() => {
     setMounted(true);
 
-    const t = localStorage.getItem("token");
-
-    if (!t) {
+    // check login
+    const token = localStorage.getItem("token");
+    if (!token) {
       router.replace("/main/login");
-      return;
     }
-
-    setToken(t);
   }, []);
 
   /* =====================
@@ -37,9 +32,7 @@ export default function UpdateRate() {
     fetch("https://sivaahbackend.onrender.com/api/rate")
       .then(r => r.json())
       .then(data => {
-        if (data?.rate) {
-          setRate(data.rate);
-        }
+        if (data?.rate) setRate(data.rate);
       })
       .catch(console.error);
   }, [mounted]);
@@ -50,6 +43,14 @@ export default function UpdateRate() {
 
   const updateRate = async () => {
     if (!rate) return alert("Enter rate");
+
+    const token = localStorage.getItem("token"); // 🔥 always fresh token
+
+    if (!token) {
+      alert("Session expired. Login again.");
+      router.push("/main/login");
+      return;
+    }
 
     setLoading(true);
 
@@ -68,9 +69,17 @@ export default function UpdateRate() {
         }
       );
 
+      // 🔥 handle expired login
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        alert("Session expired. Please login again.");
+        router.push("/main/login");
+        return;
+      }
+
       if (!res.ok) throw new Error("Failed");
 
-      alert("✅ Rate Updated Successfully!");
+      alert("✅ Rate Updated & Products Repriced!");
     } catch (err) {
       alert("❌ Error updating rate");
       console.error(err);
@@ -87,12 +96,10 @@ export default function UpdateRate() {
 
   return (
     <div className="container mt-5" style={{ maxWidth: 500 }}>
-      <h1 className="fw-semibold mb-3">
-        Update Silver Rate
-      </h1>
+      <h1 className="fw-semibold mb-3">Update Silver Rate</h1>
 
       <p className="text-muted mb-3">
-        Current global rate applied to all products.
+        This rate updates prices of all products automatically.
       </p>
 
       <input
