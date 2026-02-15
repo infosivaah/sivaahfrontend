@@ -1,58 +1,24 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import ProductSkeleton from "../../components/skeletons/ProductSkeleton";
 
-export default function ProductPage() {
+export default function ProductPage({ product }) {
   const router = useRouter();
-  const { slug } = router.query;
   const { addToCart } = useCart();
-
-  const [product, setProduct] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  /* ---------------- FETCH PRODUCT ---------------- */
-  useEffect(() => {
-    if (!router.isReady || !slug) return;
-
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(
-          `https://sivaahbackend.onrender.com/api/products/slug/${slug}`
-        );
-
-        if (!res.ok) throw new Error("Product not found");
-
-        const data = await res.json();
-        setProduct(data);
-      } catch (err) {
-        console.error(err);
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [router.isReady, slug]);
-
-  /* ---------------- LOADING / ERROR ---------------- */
-
-
-if (loading) {
-  return <ProductSkeleton />;
-}
-
+  /* ===== fallback loading (FIRST TIME BUILD) ===== */
+  // if (router.isFallback) {
+  //   return <ProductSkeleton />;
+  // }
 
   if (!product) {
     return <p className="text-center mt-5">Product not found</p>;
   }
 
-  const images = Array.isArray(product.images)
-    ? product.images
-    : [];
+  const images = Array.isArray(product.images) ? product.images : [];
 
   const mainImage =
     images[activeImage]?.replace(
@@ -60,52 +26,81 @@ if (loading) {
       "/upload/w_900,q_auto,f_auto/"
     );
 
-  /* ---------------- UI ---------------- */
+  const seoTitle =
+    product?.seo?.title ||
+    `${product.name} – 925 Silver Jewellery | SIVAAH`;
+
+  const seoDescription =
+  product?.seo?.description ||
+  product.subtitle ||
+  product.description?.slice(0, 160) ||
+  `Buy ${product.name} in pure 925 sterling silver. Premium spiritual jewellery by SIVAAH.`;
+
+  const canonical = `https://sivaah.in/product/${product.slug}`;
 
   return (
     <>
       <Head>
-        <title>{product.name} – 925 Silver Jewellery</title>
-        <meta name="description" content={product.subtitle} />
-{/* JSON-LD Structured Data for Google */}
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org/",
-        "@type": "Product",
-        "name": product.name,
-        "image": product.images,
-        "description": product.description,
-        "brand": {
-          "@type": "Brand",
-          "name": "Sivaah"
-        },
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "INR",
-          "price": product.price,
-          "availability": "https://schema.org/InStock", // Tells Google "It's ready to buy!"
-          "url": `https://www.sivaah.in/product/${slug}` // Replace with your actual domain
-        }
-      }),
-    }}
-  />
-        <meta property="og:title" content={product.name} />
-        <meta property="og:description" content={product.subtitle} />
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={product?.seo?.keywords || ""} />
+        <meta name="robots" content="index, follow" />
+
+        <link rel="canonical" href={canonical} />
+
+        {/* OpenGraph */}
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
         <meta property="og:image" content={product.images?.[0]} />
         <meta property="og:type" content="product" />
+        <meta property="og:url" content={canonical} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={product.images?.[0]} />
+
+        {/* Google Rich Product */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org/",
+              "@type": "Product",
+              name: product.name,
+              image: product.images,
+              description: seoDescription || "Premium 925 silver jewellery by SIVAAH.",
+              brand: {
+                "@type": "Brand",
+                name: "SIVAAH"
+              },
+              offers: {
+                "@type": "Offer",
+                priceCurrency: "INR",
+                price: product.price,
+                availability:
+                  product.stock > 0
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+                priceValidUntil: "2026-12-31",
+                url: canonical
+              }
+            })
+          }}
+        />
       </Head>
 
+
+      {/* ===== YOUR UI UNCHANGED ===== */}
       <div className="container mt-4">
         <div className="row g-5">
-          {/* LEFT — IMAGE GALLERY */}
           <div className="col-md-6">
             <div className="pdp-image-wrap">
               {mainImage ? (
                 <img
                   src={mainImage}
-                  alt={product.name}
+                  alt={`${product.name} 925 silver jewellery SIVAAH`}
                   className="img-fluid rounded"
                 />
               ) : (
@@ -115,7 +110,6 @@ if (loading) {
               )}
             </div>
 
-            {/* THUMBNAILS */}
             {images.length > 1 && (
               <div className="d-flex gap-2 mt-3">
                 {images.map((img, i) => (
@@ -126,27 +120,21 @@ if (loading) {
                       "/upload/w_120,h_120,c_fill,q_auto,f_auto/"
                     )}
                     alt="thumb"
-                    className={`pdp-thumb ${i === activeImage ? "active" : ""
-                      }`}
+                    className={`pdp-thumb ${i === activeImage ? "active" : ""}`}
                     onClick={() => setActiveImage(i)}
-                    style={{
-                      cursor: "pointer",
-                      borderRadius: 6
-                    }}
+                    style={{ cursor: "pointer", borderRadius: 6 }}
                   />
                 ))}
               </div>
             )}
           </div>
 
-          {/* RIGHT — PRODUCT INFO */}
           <div className="col-md-6">
             <span className="text-uppercase small text-muted">
               {product.emotion}
             </span>
 
             <h1 className="mt-2">{product.name}</h1>
-
             <p className="text-muted">{product.subtitle}</p>
 
             <div className="fs-4 fw-semibold mt-3">
@@ -158,25 +146,10 @@ if (loading) {
               )}
             </div>
 
-            <p className="text-danger small mt-1">
-              Only few pieces left
-            </p>
+            <p className="text-danger small mt-1">Only few pieces left</p>
 
             <hr />
-            <h6>Description</h6>
-            <p>{product.description}</p>
-            {/* BENEFITS */}
-            <h6>Specifications</h6>
-            {Array.isArray(product.benefits) &&
-              product.benefits.length > 0 && (
-                <ul className="ps-3">
-                  {product.benefits.map((b, i) => (
-                    <li key={i}>{b}</li>
-                  ))}
-                </ul>
-              )}
 
-            {/* CTA */}
             <div className="d-grid gap-2 mt-4">
               <button
                 className="btn btn-dark btn-lg"
@@ -195,9 +168,57 @@ if (loading) {
                 Add to Cart
               </button>
             </div>
+            <hr />
+            <h6>Description</h6>
+            <p>{product.description}</p>
+
+            <h6>Specifications</h6>
+            {Array.isArray(product.benefits) && product.benefits.length > 0 && (
+              <ul className="ps-3">
+                {product.benefits.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+            )}
+
           </div>
         </div>
       </div>
     </>
   );
+}
+export async function getStaticPaths() {
+  const res = await fetch(
+    "https://sivaahbackend.onrender.com/api/products"
+  );
+
+  const products = await res.json();
+
+  const paths = products.map((p) => ({
+    params: { slug: p.slug }
+  }));
+
+  return {
+    paths,
+    fallback: "blocking"
+  };
+}
+
+export async function getStaticProps({ params }) {
+  try {
+    const res = await fetch(
+      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`
+    );
+
+    if (!res.ok) return { notFound: true };
+
+    const product = await res.json();
+
+    return {
+      props: { product },
+      revalidate: 3600
+    };
+  } catch {
+    return { notFound: true };
+  }
 }

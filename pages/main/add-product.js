@@ -17,7 +17,7 @@ export default function AddProduct() {
   /* ---------------- STATES ---------------- */
 
   const [categories, setCategories] = useState([]);
-  const [silverRate, setSilverRate] = useState(null); // 🔥 GLOBAL RATE
+  const [silverRate, setSilverRate] = useState(null);
 
   const [images, setImages] = useState([]);
   const [preview, setPreview] = useState([]);
@@ -30,12 +30,15 @@ export default function AddProduct() {
     category: "",
     description: "",
     benefits: "",
-
     grams: "",
     labourPerGram: "",
-
     mrp: "",
     stock: "",
+
+    // 🔥 NEW SEO FIELDS
+    seoTitle: "",
+    seoDescription: "",
+    seoKeywords: "",
 
     isActive: true
   });
@@ -88,7 +91,7 @@ export default function AddProduct() {
     );
   }, [silverRate, form.grams, form.labourPerGram]);
 
-  /* ---------------- SMART IMAGE HANDLER ---------------- */
+  /* ---------------- IMAGE HANDLER ---------------- */
 
   const handleImages = async (e) => {
     const files = Array.from(e.target.files);
@@ -122,9 +125,7 @@ export default function AddProduct() {
 
     const res = await fetch("https://sivaahbackend.onrender.com/api/upload", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData
     });
 
@@ -168,12 +169,18 @@ export default function AddProduct() {
         grams: Number(form.grams),
         labourPerGram: Number(form.labourPerGram),
 
-        price: calculatedPrice, // 🔥 FINAL PRICE SAVED
-
+        price: calculatedPrice,
         mrp: Number(form.mrp),
         stock: Number(form.stock),
 
-        images: imageUrls
+        images: imageUrls,
+
+        // 🔥 SEND SEO DATA
+        seo: {
+          title: form.seoTitle,
+          description: form.seoDescription,
+          keywords: form.seoKeywords
+        }
       };
 
       const res = await fetch(
@@ -207,141 +214,65 @@ export default function AddProduct() {
       <h1>Add Product</h1>
 
       {!silverRate && (
-        <p className="text-danger">
-          ⚠️ Silver rate not loaded yet.
-        </p>
+        <p className="text-danger">⚠️ Silver rate not loaded yet.</p>
       )}
 
-      <input
-        className="form-control mb-2"
-        placeholder="Name *"
-        name="name"
-        onChange={handleChange}
-      />
+      <input className="form-control mb-2" placeholder="Name *" name="name" onChange={handleChange} />
+      <input className="form-control mb-2" placeholder="Subtitle" name="subtitle" onChange={handleChange} />
 
-      <input
-        className="form-control mb-2"
-        placeholder="Subtitle"
-        name="subtitle"
-        onChange={handleChange}
-      />
-
-      {/* CATEGORY */}
-      <select
-        className="form-control mb-2"
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-      >
+      <select className="form-control mb-2" name="category" value={form.category} onChange={handleChange}>
         <option value="">Select Category *</option>
         {categories.map(cat => (
-          <option key={cat._id} value={cat.name}>
-            {cat.name}
-          </option>
+          <option key={cat._id} value={cat.name}>{cat.name}</option>
         ))}
       </select>
-{/* EMOTION */}
-<select
-  className="form-control mb-2"
-  name="emotion"
-  value={form.emotion}
-  onChange={handleChange}
->
-  <option value="Protection">Protection</option>
-  <option value="Strength">Strength</option>
-  <option value="Abundance">Abundance</option>
-  <option value="Balance">Balance</option>
-  <option value="Healing">Healing</option>
-  <option value="Love">Love</option>
-  <option value="Peace">Peace</option>
-  <option value="Focus">Focus</option>
-  <option value="Grounding">Grounding</option>
-  <option value="Good Luck">Good Luck</option>
-  <option value="Care">Care</option>
-</select>
 
-      {/* WEIGHT + LABOUR */}
+      <select className="form-control mb-2" name="emotion" value={form.emotion} onChange={handleChange}>
+        <option>Protection</option>
+        <option>Strength</option>
+        <option>Abundance</option>
+        <option>Balance</option>
+        <option>Healing</option>
+        <option>Love</option>
+        <option>Peace</option>
+        <option>Focus</option>
+        <option>Grounding</option>
+        <option>Good Luck</option>
+        <option>Care</option>
+      </select>
 
-      <input
-        className="form-control mb-2"
-        name="grams"
-        placeholder="Weight (grams)"
-        type="number"
-        onChange={handleChange}
-      />
-
-      <input
-        className="form-control mb-2"
-        name="labourPerGram"
-        placeholder="Labour ₹ per gram"
-        type="number"
-        onChange={handleChange}
-      />
-
-      {/* 💰 AUTO PRICE */}
+      <input className="form-control mb-2" name="grams" placeholder="Weight (grams)" type="number" onChange={handleChange} />
+      <input className="form-control mb-2" name="labourPerGram" placeholder="Labour ₹ per gram" type="number" onChange={handleChange} />
 
       <div className="alert alert-light border fw-semibold">
         Price (Auto): ₹ {calculatedPrice || "—"}
       </div>
 
-      <textarea
-        className="form-control mb-2"
-        placeholder="Description"
-        name="description"
-        onChange={handleChange}
-      />
+      <textarea className="form-control mb-2" placeholder="Description" name="description" onChange={handleChange} />
+      <textarea className="form-control mb-2" placeholder="Benefits (comma separated)" name="benefits" onChange={handleChange} />
 
-      <textarea
-        className="form-control mb-2"
-        placeholder="Benefits (comma separated)"
-        name="benefits"
-        onChange={handleChange}
-      />
+      <input className="form-control mb-2" placeholder="MRP" name="mrp" type="number" onChange={handleChange} />
+      <input className="form-control mb-3" placeholder="Stock *" name="stock" type="number" onChange={handleChange} />
 
-      <input
-        className="form-control mb-2"
-        placeholder="MRP"
-        name="mrp"
-        type="number"
-        onChange={handleChange}
-      />
+      {/* 🔥 SEO SECTION */}
+      <hr />
+      <h5>SEO Settings (for Google Ranking)</h5>
 
-      <input
-        className="form-control mb-3"
-        placeholder="Stock *"
-        name="stock"
-        type="number"
-        onChange={handleChange}
-      />
+      <input className="form-control mb-2" placeholder="SEO Title (Google Title)" name="seoTitle" onChange={handleChange} />
+      <textarea className="form-control mb-2" placeholder="SEO Description (Google Description)" name="seoDescription" onChange={handleChange} />
+      <input className="form-control mb-3" placeholder="SEO Keywords (comma separated)" name="seoKeywords" onChange={handleChange} />
 
-      <input
-        type="file"
-        className="form-control mb-3"
-        multiple
-        accept="image/*"
-        onChange={handleImages}
-      />
+      <input type="file" className="form-control mb-3" multiple accept="image/*" onChange={handleImages} />
 
       {preview.length > 0 && (
         <div className="d-flex gap-2 flex-wrap mb-3">
           {preview.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt="preview"
-              width="80"
-              height="80"
-              style={{ objectFit: "cover", borderRadius: 6 }}
-            />
+            <img key={i} src={src} alt="preview" width="80" height="80" style={{ objectFit: "cover", borderRadius: 6 }} />
           ))}
         </div>
       )}
 
-      <button
-        className="btn btn-dark w-100"
-        onClick={submitProduct}
-        disabled={loading}
-      >
+      <button className="btn btn-dark w-100" onClick={submitProduct} disabled={loading}>
         {loading ? "Uploading..." : "Add Product"}
       </button>
     </div>
