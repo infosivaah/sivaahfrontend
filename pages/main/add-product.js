@@ -5,14 +5,19 @@ import imageCompression from "browser-image-compression";
 export default function AddProduct() {
   const router = useRouter();
 
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("token")
-      : null;
+const [token, setToken] = useState(null);
 
-  useEffect(() => {
-    if (!token) router.push("/main/login");
-  }, [token]);
+useEffect(() => {
+  const t = localStorage.getItem("token");
+
+  if (!t) {
+    router.push("/main/login");
+    return;
+  }
+
+  setToken(t);
+}, []);
+
 
   /* ---------------- STATES ---------------- */
 
@@ -119,21 +124,47 @@ export default function AddProduct() {
 
   /* ---------------- IMAGE UPLOAD ---------------- */
 
-  const uploadImagesToServer = async () => {
+  // const uploadImagesToServer = async () => {
+  //   const formData = new FormData();
+  //   images.forEach(img => formData.append("images", img));
+
+  //   const res = await fetch("https://sivaahbackend.onrender.com/api/upload", {
+  //     method: "POST",
+  //     headers: { Authorization: `Bearer ${token}` },
+  //     body: formData
+  //   });
+
+  //   if (!res.ok) throw new Error("Image upload failed");
+
+  //   const data = await res.json();
+  //   return data.urls;
+  // };
+
+
+  const uploadImagesToCloudinary = async () => {
+  const uploadedUrls = [];
+
+  for (const image of images) {
     const formData = new FormData();
-    images.forEach(img => formData.append("images", img));
+    formData.append("file", image);
+    formData.append("upload_preset", "sivaah_products"); // your preset
 
-    const res = await fetch("https://sivaahbackend.onrender.com/api/upload", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/dh61336lh/image/upload",
+      {
+        method: "POST",
+        body: formData
+      }
+    );
 
-    if (!res.ok) throw new Error("Image upload failed");
+    if (!res.ok) throw new Error("Cloudinary upload failed");
 
     const data = await res.json();
-    return data.urls;
-  };
+    uploadedUrls.push(data.secure_url);
+  }
+
+  return uploadedUrls;
+};
 
   /* ---------------- SUBMIT ---------------- */
 
@@ -154,7 +185,8 @@ export default function AddProduct() {
     setLoading(true);
 
     try {
-      const imageUrls = await uploadImagesToServer();
+      // const imageUrls = await uploadImagesToServer();
+      const imageUrls = await uploadImagesToCloudinary();
 
       const payload = {
         ...form,
@@ -189,7 +221,8 @@ export default function AddProduct() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+           Authorization: `Bearer ${localStorage.getItem("token")?.trim()}`
+
           },
           body: JSON.stringify(payload)
         }
@@ -272,9 +305,14 @@ export default function AddProduct() {
         </div>
       )}
 
-      <button className="btn btn-dark w-100" onClick={submitProduct} disabled={loading}>
-        {loading ? "Uploading..." : "Add Product"}
-      </button>
+     <button
+  className="btn btn-dark w-100"
+  onClick={submitProduct}
+  disabled={loading || !token}
+>
+  {loading ? "Uploading..." : "Add Product"}
+</button>
+
     </div>
   );
 }
