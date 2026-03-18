@@ -7,6 +7,7 @@ import SEO from "../next-seo.config";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { useEffect } from "react";
 // 🔥 Configure progress bar
 NProgress.configure({
   showSpinner: false,
@@ -28,6 +29,9 @@ Router.events.on("routeChangeError", () => {
   document.body.classList.remove("page-loading");
 });
 export default function App({ Component, pageProps }) {
+    useEffect(() => {
+    import("bootstrap/dist/js/bootstrap.bundle.min.js");
+  }, []);
   return (
     <CartProvider>
       <Layout>

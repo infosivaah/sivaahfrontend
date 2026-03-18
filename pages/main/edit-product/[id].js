@@ -33,7 +33,7 @@ export default function EditProduct() {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/${id}`,
+          `https://sivaahbackend.onrender.com/api/products/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -94,7 +94,7 @@ export default function EditProduct() {
       };
 
       const res = await fetch(
-        `http://localhost:5000/api/products/${id}`,
+        `https://sivaahbackend.onrender.com/api/products/${id}`,
         {
           method: "PUT",
           headers: {
