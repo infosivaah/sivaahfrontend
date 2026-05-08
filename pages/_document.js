@@ -7,6 +7,7 @@ export default function Document() {
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#efddc9" />
         <link rel="icon" href="/favicon.ico" />
+         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </Head>
       <body>
         <Main />

@@ -3,12 +3,21 @@ import { createContext, useContext, useState } from "react";
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
+
   const [cart, setCart] = useState([]);
 
+  /* =========================
+     ADD TO CART
+  ========================= */
+
   const addToCart = (product) => {
-    const existing = cart.find((p) => p.slug === product.slug);
+
+    const existing = cart.find(
+      (p) => p.slug === product.slug
+    );
 
     if (existing) {
+
       setCart(
         cart.map((p) =>
           p.slug === product.slug
@@ -16,25 +25,62 @@ export function CartProvider({ children }) {
             : p
         )
       );
+
     } else {
-      setCart([...cart, { ...product, qty: 1 }]);
+
+      setCart([
+        ...cart,
+        {
+          ...product,
+          qty: 1
+        }
+      ]);
     }
   };
 
+  /* =========================
+     UPDATE QTY
+  ========================= */
+
   const updateQty = (slug, qty) => {
+
     setCart(
       cart.map((p) =>
-        p.slug === slug ? { ...p, qty } : p
+        p.slug === slug
+          ? { ...p, qty }
+          : p
       )
     );
   };
 
+  /* =========================
+     REMOVE ITEM
+  ========================= */
+
   const removeFromCart = (slug) => {
-    setCart(cart.filter((p) => p.slug !== slug));
+
+    setCart(
+      cart.filter(
+        (p) => p.slug !== slug
+      )
+    );
   };
 
+  /* =========================
+     CLEAR CART
+  ========================= */
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  /* =========================
+     TOTAL
+  ========================= */
+
   const totalAmount = cart.reduce(
-    (sum, item) => sum + item.price * item.qty,
+    (sum, item) =>
+      sum + item.price * item.qty,
     0
   );
 
@@ -45,6 +91,7 @@ export function CartProvider({ children }) {
         addToCart,
         updateQty,
         removeFromCart,
+        clearCart,
         totalAmount
       }}
     >
@@ -53,4 +100,5 @@ export function CartProvider({ children }) {
   );
 }
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () =>
+  useContext(CartContext);
