@@ -9,7 +9,49 @@ export default function ProductPage({ product }) {
   const { addToCart } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
+  const [silverRate, setSilverRate] = useState(null);
+  useEffect(() => {
 
+    fetch(
+      "https://sivaahbackend.onrender.com/api/rate"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+
+        setSilverRate(
+          data.rate
+        );
+      });
+
+  }, []);
+  const silverValue =
+    silverRate && product.grams
+      ? Math.round(
+        product.grams *
+        silverRate
+      )
+      : 0;
+
+  const labourTotal =
+    product.grams &&
+      product.labourPerGram
+      ? Math.round(
+        product.grams *
+        product.labourPerGram
+      )
+      : 0;
+
+  const craftsmanshipValue =
+    Math.round(
+      labourTotal * 0.7
+    );
+
+  const brandValue =
+    Math.round(
+      labourTotal * 0.3
+    );
+
+  const packagingValue = 50;
   useEffect(() => {
     if (showCartPopup) {
       const timer = setTimeout(() => {
@@ -652,6 +694,195 @@ export default function ProductPage({ product }) {
             color: #8A8678;
             letter-spacing: 0.06em;
           }
+            
+/* ─────────────────────────────────────────
+   LIVE SILVER RATE
+───────────────────────────────────────── */
+
+.pdp-live-rate {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  background:
+    rgba(176,141,87,0.08);
+
+  color: #8A6B45;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  margin-bottom: 1.6rem;
+}
+
+.live-dot {
+
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #B08D57;
+
+  animation: livePulse 2s infinite;
+}
+
+@keyframes livePulse {
+
+  0%,100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ─────────────────────────────────────────
+   TRANSPARENT PRICING
+───────────────────────────────────────── */
+
+.pdp-price-breakdown {
+
+  margin-top: 0.7rem;
+
+  border:
+    0.5px solid #DDD3C4;
+
+  background:
+    linear-gradient(
+      180deg,
+      #FFFDF9,
+      #F8F3EB
+    );
+
+  border-radius: 4px;
+
+  overflow: hidden;
+}
+
+.pdp-break-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 16px 18px;
+
+  border-bottom:
+    0.5px solid #E7DED1;
+}
+
+.pdp-break-row:last-child {
+
+  border-bottom: none;
+}
+
+.pdp-break-title {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-size: 20px;
+
+  color: #1C1C1A;
+
+  margin-bottom: 2px;
+}
+
+.pdp-break-sub {
+
+  font-size: 11px;
+
+  color: #8A8678;
+
+  line-height: 1.6;
+}
+
+.pdp-break-price {
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  color: #1C1C1A;
+
+  white-space: nowrap;
+}
+
+.pdp-break-total {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 18px;
+
+  background:
+    rgba(214,185,140,0.08);
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-size: 28px;
+
+  color: #1C1C1A;
+}
+
+.pdp-pricing-note {
+
+  margin-top: 14px;
+
+  font-size: 11px;
+
+  line-height: 1.8;
+
+  color: #7B7468;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .pdp-break-row {
+
+    padding: 14px;
+  }
+
+  .pdp-break-title {
+
+    font-size: 17px;
+  }
+
+  .pdp-break-sub {
+
+    font-size: 10px;
+  }
+
+  .pdp-break-total {
+
+    font-size: 22px;
+  }
+}
         `}</style>
       </Head>
 
@@ -796,7 +1027,125 @@ export default function ProductPage({ product }) {
               {/* Description */}
               <div className="pdp-section-label">About this piece</div>
               <p className="pdp-desc">{product.description}</p>
+              {/* TRANSPARENT PRICING */}
 
+              <div className="pdp-section-label">
+                How this piece is priced
+              </div>
+
+              <div className="pdp-price-breakdown">
+
+                {/* SILVER */}
+
+                <div className="pdp-break-row">
+
+                  <div>
+
+                    <div className="pdp-break-title">
+                      Silver
+                    </div>
+
+                    <div className="pdp-break-sub">
+                      {product.grams}gm × ₹{silverRate}
+                    </div>
+
+                  </div>
+
+                  <div className="pdp-break-price">
+                    ₹{silverValue}
+                  </div>
+
+                </div>
+
+                {/* CRAFTSMANSHIP */}
+
+                <div className="pdp-break-row">
+
+                  <div>
+
+                    <div className="pdp-break-title">
+                      Craftsmanship
+                    </div>
+
+                    <div className="pdp-break-sub">
+                      Designing & finishing
+                    </div>
+
+                  </div>
+
+                  <div className="pdp-break-price">
+                    ₹{craftsmanshipValue}
+                  </div>
+
+                </div>
+
+                {/* PACKAGING */}
+
+                <div className="pdp-break-row">
+
+                  <div>
+
+                    <div className="pdp-break-title">
+                      Packaging & hallmark
+                    </div>
+
+                    <div className="pdp-break-sub">
+                      Luxury packaging & certification
+                    </div>
+
+                  </div>
+
+                  <div className="pdp-break-price">
+                    ₹{packagingValue}
+                  </div>
+
+                </div>
+
+                {/* BRAND */}
+
+                <div className="pdp-break-row">
+
+                  <div>
+
+                    <div className="pdp-break-title">
+                      Brand & fulfilment
+                    </div>
+
+                    <div className="pdp-break-sub">
+                      Quality checks & operations
+                    </div>
+
+                  </div>
+
+                  <div className="pdp-break-price">
+                    ₹{brandValue}
+                  </div>
+
+                </div>
+
+                {/* TOTAL */}
+
+                <div className="pdp-break-total">
+
+                  <span>
+                    You pay
+                  </span>
+
+                  <span>
+                    ₹{product.price}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div className="pdp-pricing-note">
+
+                We openly show silver weight,
+                live silver pricing and cost breakup —
+                because trust should never be hidden.
+
+              </div>
               <div className="pdp-section-label">
                 Customer Reviews
               </div>

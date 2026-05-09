@@ -816,44 +816,44 @@ a {
 
       <section className="hero">
 
- <div className="hero-bg">
+        <div className="hero-bg">
 
-  <div className="hero-carousel">
+          <div className="hero-carousel">
 
-    {(carousel?.length
-      ? carousel
-      : [
-          "https://res.cloudinary.com/dh61336lh/image/upload/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
-        ]
-    ).map((img, index) => (
+            {(carousel?.length
+              ? carousel
+              : [
+                "https://res.cloudinary.com/dh61336lh/image/upload/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
+              ]
+            ).map((img, index) => (
 
-      <div
-        key={index}
-        className="hero-slide"
-        style={{
-          animationDelay: `${index * 5}s`
-        }}
-      >
+              <div
+                key={index}
+                className="hero-slide"
+                style={{
+                  animationDelay: `${index * 5}s`
+                }}
+              >
 
-        <img
-          src={img}
-          alt={`hero-${index}`}
-        />
+                <img
+                  src={img}
+                  alt={`hero-${index}`}
+                />
 
-      </div>
+              </div>
 
-    ))}
+            ))}
 
-  </div>
+          </div>
 
-</div>
+        </div>
 
         <div className="hero-overlay"></div>
 
         <div className="hero-content">
 
           <div className="hero-sub">
-            Luxury Minimal Jewellery
+            925 Silver | Real Weight | Fair Price.
           </div>
 
           <div className="lux-title">
@@ -863,9 +863,7 @@ a {
           </div>
 
           <div className="hero-text">
-            Premium 925 sterling silver jewellery
-            inspired by devotion, elegance,
-            minimalism, and timeless femininity.
+           India's first fully transparent silver brand. Weight, price breakup, silver rate — all visible. Always.
           </div>
 
           <div className="hero-btns">
@@ -874,7 +872,7 @@ a {
               href="/shop"
               className="btn-main"
             >
-              Buy Now
+              Shop Now
             </Link>
 
             <Link
@@ -909,8 +907,8 @@ a {
 
       </section>
 
-    
- {/* COLLECTIONS */}
+
+      {/* COLLECTIONS */}
 
       <section className="section-space">
 
@@ -996,7 +994,7 @@ a {
                 className="product-wrap"
               >
 
-               
+
 
                 <ProductCard product={product} />
 
@@ -1009,7 +1007,7 @@ a {
         </div>
 
       </section>
-  {/* TRUST SECTION */}
+      {/* TRUST SECTION */}
 
       <section className="trust-grid">
 
@@ -1131,7 +1129,7 @@ a {
 
       </section>
 
-     
+
 
       {/* REVIEWS */}
 
