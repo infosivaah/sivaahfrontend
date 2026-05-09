@@ -1296,7 +1296,7 @@ export async function getStaticProps() {
         carousel:
           carouselData?.imageList || []
       },
-      revalidate: 60
+      revalidate: 1800
     };
 
   } catch (err) {

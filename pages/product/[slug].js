@@ -1277,15 +1277,37 @@ export async function getStaticPaths() {
   return { paths, fallback: "blocking" };
 }
 
-export async function getStaticProps({ params }) {
+export async function getServerSideProps({ params }) {
+
   try {
+
     const res = await fetch(
-      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`
+      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`,
+      {
+        cache: "no-store"
+      }
     );
-    if (!res.ok) return { notFound: true };
-    const product = await res.json();
-    return { props: { product }, revalidate: 3600 };
+
+    if (!res.ok) {
+
+      return {
+        notFound: true
+      };
+    }
+
+    const product =
+      await res.json();
+
+    return {
+      props: {
+        product
+      }
+    };
+
   } catch {
-    return { notFound: true };
+
+    return {
+      notFound: true
+    };
   }
 }
