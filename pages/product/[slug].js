@@ -1270,12 +1270,6 @@ export default function ProductPage({ product }) {
   );
 }
 
-export async function getStaticPaths() {
-  const res = await fetch("https://sivaahbackend.onrender.com/api/products");
-  const products = await res.json();
-  const paths = products.map((p) => ({ params: { slug: p.slug } }));
-  return { paths, fallback: "blocking" };
-}
 
 export async function getServerSideProps({ params }) {
 
