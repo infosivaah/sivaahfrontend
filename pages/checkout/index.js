@@ -5,7 +5,12 @@ import { useCart } from "../../context/CartContext";
 
 export default function Checkout() {
   const router = useRouter();
-  const { cart, totalAmount, clearCart } = useCart();
+  const {
+    cart,
+    totalAmount,
+    clearCart,
+    removeFromCart
+  } = useCart();
 
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("ONLINE");
@@ -173,7 +178,22 @@ export default function Checkout() {
           max-width: 980px;
           margin: 0 auto;
         }
+.ck-remove-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #B27D63;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+}
 
+.ck-remove-btn:hover {
+  opacity: 0.7;
+}
         /* ── Page header ── */
         .ck-page-header {
           margin-bottom: 2.5rem;
@@ -636,7 +656,7 @@ export default function Checkout() {
                 </div>
                 {appliedCoupon && (
                   <div className="ck-coupon-applied">
-                    <svg style={{ width: 13, height: 13, stroke: "#7A8A6E", fill: "none", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }} viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg style={{ width: 13, height: 13, stroke: "#7A8A6E", fill: "none", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }} viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
                     Code applied:
                     <span className="ck-coupon-applied-tag">{appliedCoupon}</span>
                   </div>
@@ -652,15 +672,34 @@ export default function Checkout() {
                 <div className="ck-card-title">Order Summary</div>
 
                 {cart.map((item) => (
-                  <div key={item.slug} className="ck-order-item">
+                  <div
+                    key={item.slug}
+                    className="ck-order-item"
+                  >
                     <div>
-                      <div className="ck-order-item-name">{item.name}</div>
-                      <div className="ck-order-item-qty">Qty: {item.qty}</div>
+                      <div className="ck-order-item-name">
+                        {item.name}
+                      </div>
+
+                      <div className="ck-order-item-qty">
+                        Qty: {item.qty}
+                      </div>
+
+                      <button
+                        className="ck-remove-btn"
+                        onClick={() =>
+                          removeFromCart(item.slug)
+                        }
+                      >
+                        Remove
+                      </button>
                     </div>
-                    <div className="ck-order-item-price">₹{item.price * item.qty}</div>
+
+                    <div className="ck-order-item-price">
+                      ₹{item.price * item.qty}
+                    </div>
                   </div>
                 ))}
-
                 <div className="ck-totals">
                   <div className="ck-total-row">
                     <span>Subtotal</span>
@@ -710,19 +749,19 @@ export default function Checkout() {
                 {/* Trust */}
                 <div className="ck-trust">
                   <div className="ck-trust-item">
-                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                     100% Secure Payments
                   </div>
                   <div className="ck-trust-item">
-                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1" /><path d="M16 8h4l3 3v5h-7V8z" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>
                     PAN India Shipping
                   </div>
                   <div className="ck-trust-item">
-                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" /></svg>
                     Genuine 925 Sterling Silver
                   </div>
                   <div className="ck-trust-item">
-                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <svg className="ck-trust-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
                     WhatsApp Tracking Updates
                   </div>
                 </div>
