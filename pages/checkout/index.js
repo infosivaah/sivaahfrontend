@@ -113,7 +113,7 @@ export default function Checkout() {
       });
       const orderData = await orderRes.json();
       const options = {
-        key: "rzp_test_SmQBRQkTGe1ysQ",
+        key: "rzp_live_SnDolof3RDMzxz",
         amount: orderData.amount,
         currency: orderData.currency,
         name: "SIVAAH",
