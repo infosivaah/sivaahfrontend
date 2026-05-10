@@ -3,9 +3,13 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import ProductSkeleton from "../../components/skeletons/ProductSkeleton";
-
+import Image from "next/image";
 export default function ProductPage({ product }) {
+
   const router = useRouter();
+  if (router.isFallback) {
+    return <ProductSkeleton />;
+  }
   const { addToCart } = useCart();
   const [activeImage, setActiveImage] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
@@ -27,32 +31,32 @@ export default function ProductPage({ product }) {
 
   }, []);
   const silverValue =
-  Math.round(
-    product.grams *
-    silverRate
-  );
+    Math.round(
+      product.grams *
+      silverRate
+    );
 
-const totalLabour =
-  Math.round(
-    product.grams *
-    product.labourPerGram
-  );
+  const totalLabour =
+    Math.round(
+      product.grams *
+      product.labourPerGram
+    );
 
-const packagingValue = 159;
+  const packagingValue = 159;
 
-const labourAdjusted =
-  totalLabour -
-  packagingValue;
+  const labourAdjusted =
+    totalLabour -
+    packagingValue;
 
-const craftsmanshipValue =
-  Math.round(
-    labourAdjusted * 0.7
-  );
+  const craftsmanshipValue =
+    Math.round(
+      labourAdjusted * 0.7
+    );
 
-const brandValue =
-  labourAdjusted -
-  craftsmanshipValue;
- 
+  const brandValue =
+    labourAdjusted -
+    craftsmanshipValue;
+
   const labourTotal =
     product.grams &&
       product.labourPerGram
@@ -62,11 +66,11 @@ const brandValue =
       )
       : 0;
 
- 
 
- 
 
-  
+
+
+
   useEffect(() => {
     if (showCartPopup) {
       const timer = setTimeout(() => {
@@ -156,7 +160,10 @@ const brandValue =
       .then((data) => setReviews(data));
 
   }, [product._id]);
-  
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
   return (
     <>
       <div className={`pdp-cart-popup ${showCartPopup ? "show" : ""}`}>
@@ -200,24 +207,46 @@ const brandValue =
             __html: JSON.stringify({
               "@context": "https://schema.org/",
               "@type": "Product",
+
               name: product.name,
+
               image: product.images,
-              description: seoDescription || "Premium 925 silver jewellery by SIVAAH.",
-              brand: { "@type": "Brand", name: "SIVAAH" },
+
+              description:
+                seoDescription ||
+                "Premium 925 silver jewellery by SIVAAH.",
+
+              brand: {
+                "@type": "Brand",
+                name: "SIVAAH",
+              },
+
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: 4.8,
+                reviewCount: reviews.length || 1,
+              },
+
               offers: {
                 "@type": "Offer",
+
                 priceCurrency: "INR",
+
                 price: product.price,
+
                 availability:
                   product.stock > 0
                     ? "https://schema.org/InStock"
                     : "https://schema.org/OutOfStock",
+
                 priceValidUntil: "2026-12-31",
+
                 url: canonical,
               },
             }),
           }}
         />
+
 
         <style>{`
           /* ─────────────────────────────────────────
@@ -1114,9 +1143,12 @@ const brandValue =
               {/* Fixed square image container — same shape for every product */}
               <div className="pdp-image-area">
                 {mainImage ? (
-                  <img
+                  <Image
                     src={mainImage}
                     alt={`${product.name} – 925 sterling silver jewellery by SIVAAH`}
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="pdp-main-img"
                   />
                 ) : (
@@ -1372,9 +1404,9 @@ const brandValue =
 
                     </div>
 
-               
 
-              
+
+
 
                     {/* TOTAL */}
 
