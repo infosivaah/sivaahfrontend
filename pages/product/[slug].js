@@ -1530,37 +1530,54 @@ const brandValue =
 }
 
 
-export async function getServerSideProps({ params }) {
+export async function getStaticPaths() {
+
+  const res = await fetch(
+    "https://sivaahbackend.onrender.com/api/products"
+  );
+
+  const products = await res.json();
+
+  const paths = products.map((product) => ({
+    params: {
+      slug: product.slug,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params }) {
 
   try {
 
     const res = await fetch(
-      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`,
-      {
-        cache: "no-store"
-      }
+      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`
     );
 
     if (!res.ok) {
-
       return {
-        notFound: true
+        notFound: true,
       };
     }
 
-    const product =
-      await res.json();
+    const product = await res.json();
 
     return {
       props: {
-        product
-      }
+        product,
+      },
+
+      revalidate: 3600,
     };
 
   } catch {
 
     return {
-      notFound: true
+      notFound: true,
     };
   }
 }

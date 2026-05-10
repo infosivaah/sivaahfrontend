@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCart } from "../context/CartContext";
-
+import Image from "next/image";
 export default function ProductCard({ product }) {
 
   const router = useRouter();
 
   const { addToCart } = useCart();
 
-  const [activeImage, setActiveImage] =
-    useState(0);
+  // const [activeImage, setActiveImage] =useState(0);
 
   const [isAdded, setIsAdded] =
     useState(false);
@@ -22,39 +21,54 @@ export default function ProductCard({ product }) {
 
   /* AUTO IMAGE ROTATION */
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (images.length <= 1) return;
+  //   if (images.length <= 1) return;
 
-    const interval = setInterval(() => {
+  //   const interval = setInterval(() => {
 
-      setActiveImage((prev) =>
-        prev === images.length - 1
-          ? 0
-          : prev + 1
-      );
+  //     setActiveImage((prev) =>
+  //       prev === images.length - 1
+  //         ? 0
+  //         : prev + 1
+  //     );
 
-    }, 2600);
+  //   }, 2600);
 
-    return () => clearInterval(interval);
+  //   return () => clearInterval(interval);
 
-  }, [images.length]);
+  // }, [images.length]);
 
-  const image =
-    images?.[activeImage]?.replace(
-      "/upload/",
-      "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
-    );
+  // const image =
+  //   images?.[activeImage]?.replace(
+  //     "/upload/",
+  //     "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
+  //   );
+ const firstImage =
+  images?.[0]
+    ? images[0].replace(
+        "/upload/",
+        "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
+      )
+    : "/placeholder.jpg";
+
+ const secondImage =
+  images?.[1]
+    ? images[1].replace(
+        "/upload/",
+        "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
+      )
+    : null;
 
   /* DISCOUNT */
 
   const discount =
     product.mrp
       ? Math.round(
-          ((product.mrp - product.price) /
-            product.mrp) *
-            100
-        )
+        ((product.mrp - product.price) /
+          product.mrp) *
+        100
+      )
       : null;
 
   /* ADD TO CART */
@@ -127,6 +141,7 @@ export default function ProductCard({ product }) {
         {/* IMAGE */}
 
         <Link
+        prefetch={true}
           href={`/product/${product.slug}`}
           className="text-decoration-none"
         >
@@ -144,13 +159,30 @@ export default function ProductCard({ product }) {
             )}
 
             {/* IMAGE */}
+            <Image
+              src={firstImage}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="product-image primary-image"
+            />
 
+            {secondImage && (
+              <Image
+                src={secondImage}
+                alt={product.name}
+                fill
+                sizes="(max-width: 768px) 50vw, 25vw"
+                className="product-image secondary-image"
+              />
+            )}
+            {/* 
             <img
               src={image}
               alt={product.name}
               loading="lazy"
               className="product-image"
-            />
+            /> */}
 
             {/* OVERLAY */}
 
@@ -215,7 +247,7 @@ export default function ProductCard({ product }) {
 
             </div>
 
-          
+
 
           </div>
 
@@ -224,9 +256,8 @@ export default function ProductCard({ product }) {
           <div className="btn-row">
 
             <button
-              className={`cart-btn ${
-                isAdded ? "added" : ""
-              }`}
+              className={`cart-btn ${isAdded ? "added" : ""
+                }`}
               onClick={handleAddToCart}
               disabled={isAdded}
             >
@@ -249,7 +280,7 @@ export default function ProductCard({ product }) {
         </div>
 
       </div>
-            {/* STYLES */}
+      {/* STYLES */}
 
       <style jsx>{`
 
@@ -302,20 +333,35 @@ export default function ProductCard({ product }) {
   background: #f8f4ee;
 }
 
-.product-image {
-
-  width: 100%;
-
-  height: 100%;
+:global(.product-image) {
 
   object-fit: cover;
 
   transition: 0.6s ease;
-
-  display: block;
+}
+:global(.primary-image) {
+  opacity: 1;
+  z-index: 1;
 }
 
-.lux-card:hover .product-image {
+:global(.secondary-image) {
+  opacity: 0;
+  z-index: 2;
+}
+
+/* DESKTOP HOVER ONLY */
+
+@media (hover: hover) {
+
+  .lux-card:hover :global(.primary-image) {
+    opacity: 0;
+  }
+
+  .lux-card:hover :global(.secondary-image) {
+    opacity: 1;
+  }
+}
+.lux-card:hover :global(.product-image) { 
 
   transform: scale(1.04);
 }

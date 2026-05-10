@@ -1,7 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
-
+import Image from "next/image";
+import { useState } from "react";
 export default function Home({
   products,
   categories,
@@ -9,22 +10,112 @@ export default function Home({
 }) {
 
   const bestsellers = products?.slice(0, 4);
-
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [loadingMore, setLoadingMore] = useState(false);
   return (
     <>
       <Head>
         <title>
           SIVAAH® | Premium 925 Silver Jewellery
         </title>
-
+        <meta name="theme-color" content="#faf7f2" />
         <meta
           name="description"
           content="Luxury 925 silver jewellery crafted with meaning."
         />
+        <meta
+          property="og:title"
+          content="SIVAAH® | Premium 925 Silver Jewellery"
+        />
 
+        <meta
+          property="og:description"
+          content="Luxury 925 silver jewellery crafted with meaning. Transparent pricing, real silver weight, timeless spiritual elegance."
+        />
+
+        <meta
+          property="og:image"
+          content="https://res.cloudinary.com/dh61336lh/image/upload/f_webp,q_auto,w_1200/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
+        />
+
+        <meta
+          property="og:url"
+          content="https://www.sivaah.in"
+        />
+
+        <meta
+          property="og:type"
+          content="website"
+        />
+
+        <meta
+          property="og:site_name"
+          content="SIVAAH"
+        />
+
+        <meta
+          name="twitter:card"
+          content="summary_large_image"
+        />
+
+        <meta
+          name="twitter:title"
+          content="SIVAAH® | Premium 925 Silver Jewellery"
+        />
+
+        <meta
+          name="twitter:description"
+          content="Luxury 925 silver jewellery crafted with meaning and transparency."
+        />
+
+        <meta
+          name="twitter:image"
+          content="https://res.cloudinary.com/dh61336lh/image/upload/f_webp,q_auto,w_1200/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
+        />
+
+        <meta
+          name="keywords"
+          content="
+  925 silver jewellery,
+  sterling silver jewellery india,
+  luxury silver jewellery,
+  silver rings,
+  silver earrings,
+  silver pendants,
+  transparent jewellery pricing,
+  spiritual jewellery,
+  Sivaah silver,
+  premium jewellery india
+  "
+        />
+
+        <meta
+          name="robots"
+          content="index, follow"
+        />
+
+        <link
+          rel="canonical"
+          href="https://www.sivaah.in"
+        />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "SIVAAH",
+              url: "https://www.sivaah.in",
+              logo: "https://www.sivaah.in/logo.png",
+              sameAs: [
+                "https://www.instagram.com/sivaah.in"
+              ]
+            }),
+          }}
         />
       </Head>
 
@@ -479,7 +570,7 @@ a {
   box-shadow: var(--shadow);
 }
 
-.story-img img {
+.story-img :global(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -704,7 +795,7 @@ a {
     heroFade 20s infinite;
 }
 
-.hero-slide img {
+.hero-slide :global(img) {
 
   width: 100%;
 
@@ -809,6 +900,39 @@ a {
   }
 
 }
+  .skeleton-card {
+  height: 420px;
+  border-radius: 24px;
+  background: linear-gradient(
+    90deg,
+    #f3eee7 25%,
+    #ece4d9 50%,
+    #f3eee7 75%
+  );
+
+  background-size: 200% 100%;
+
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+  h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: inherit;
+}
 
 `}</style>
 
@@ -834,11 +958,20 @@ a {
                   animationDelay: `${index * 5}s`
                 }}
               >
-
-                <img
+                <Image
                   src={img}
                   alt={`hero-${index}`}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  style={{
+                    objectFit: "cover",
+                  }}
                 />
+                {/* <img
+                  src={img}
+                  alt={`hero-${index}`}
+                /> */}
 
               </div>
 
@@ -856,15 +989,15 @@ a {
             925 Silver | Real Weight | Fair Price.
           </div>
 
-          <div className="lux-title">
+          <h1 className="lux-title">
             Crafted In Silver.
             <br />
             Worn With Intention.
-          </div>
+          </h1>
 
-          <div className="hero-text">
-           India's first fully transparent silver brand. Weight, price breakup, silver rate — all visible. Always.
-          </div>
+          <h2 className="hero-text">
+            India's first fully transparent silver brand. Weight, price breakup, silver rate — all visible. Always.
+          </h2>
 
           <div className="hero-btns">
 
@@ -920,9 +1053,9 @@ a {
               Curated Collections
             </div>
 
-            <div className="section-title">
+            <h2 className="section-title">
               Explore Categories
-            </div>
+            </h2>
 
           </div>
 
@@ -979,15 +1112,15 @@ a {
               Most Loved Pieces
             </div>
 
-            <div className="section-title">
+            <h2 className="section-title">
               Bestsellers
-            </div>
+            </h2>
 
           </div>
 
           <div className="product-grid">
 
-            {products?.map((product) => (
+            {products?.slice(0, visibleCount).map((product) => (
 
               <div
                 key={product._id}
@@ -1001,8 +1134,33 @@ a {
               </div>
 
             ))}
+            {loadingMore &&
+              Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={`skeleton-${i}`}
+                  className="skeleton-card"
+                />
+              ))}
 
           </div>
+          {visibleCount < products.length && (
+            <div style={{ textAlign: "center", marginTop: "50px" }}>
+              <button
+                className="btn-main"
+                onClick={() => {
+                  setLoadingMore(true);
+
+                  setTimeout(() => {
+                    setVisibleCount((prev) => prev + 8);
+                    setLoadingMore(false);
+                  }, 800);
+                }}
+              >
+                {loadingMore
+                  ? "Loading..."
+                  : "Load More"}
+              </button>
+            </div>)}
 
         </div>
 
@@ -1081,11 +1239,23 @@ a {
           <div className="story-grid">
 
             <div className="story-img">
+              <Image
+                src="https://res.cloudinary.com/dh61336lh/image/upload/f_webp,q_auto,w_1000/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
+                alt="Sivaah Story"
+                width={1000}
+                height={1200}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
 
-              <img
+              {/* <img
                 src="https://res.cloudinary.com/dh61336lh/image/upload/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg"
                 alt=""
-              />
+              /> */}
 
             </div>
 
