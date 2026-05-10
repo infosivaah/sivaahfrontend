@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useCart } from "../../context/CartContext";
@@ -40,6 +40,22 @@ export default function Checkout() {
   const shippingCharge = totalAmount > 1499 ? 0 : 99;
   const finalAmount = totalAmount - onlineDiscount - couponDiscount + shippingCharge;
 
+  /* ── Analytics ── */
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "begin_checkout", {
+        currency: "INR",
+        value: finalAmount,
+        items: cart.map((item) => ({
+          item_name: item.name,
+          item_id: item._id,
+          item_category: item.category,
+          price: item.price,
+          quantity: item.qty,
+        })),
+      });
+    }
+  }, []);
   /* ── Handlers ── */
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,7 +87,7 @@ export default function Checkout() {
       setAppliedCoupon(code);
       return;
     }
-     if (code === "TEST") {
+    if (code === "TEST") {
       setCouponDiscount(Math.round(totalAmount * 0.90));
       setAppliedCoupon(code);
       return;
@@ -101,15 +117,31 @@ export default function Checkout() {
 
   const handleCOD = async () => {
     if (!validateForm()) return;
+
     try {
       setLoading(true);
+
       const savedOrder = await saveOrder();
+
+      // PURCHASE EVENT
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "purchase", {
+          transaction_id: savedOrder.orderId,
+          value: finalAmount,
+          currency: "INR",
+        });
+      }
+
       clearCart();
+
       router.push(`/success?orderId=${savedOrder.orderId}`);
+
     } catch (err) {
       console.log(err);
       alert("Order failed. Please try again.");
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleOnlinePayment = async () => {
@@ -146,6 +178,11 @@ export default function Checkout() {
             clearCart();
             setLoading(false);
             router.push(`/success?orderId=${savedOrder.orderId}`);
+            window.gtag?.("event", "purchase", {
+              transaction_id: savedOrder.orderId,
+              value: finalAmount,
+              currency: "INR",
+            });
           } catch (err) { console.log(err); setLoading(false); alert("Something went wrong"); }
         },
         prefill: { name: form.name, email: form.email, contact: form.phone },

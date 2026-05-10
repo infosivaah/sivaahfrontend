@@ -12,6 +12,7 @@ export function CartProvider({ children }) {
 
   const addToCart = (product) => {
 
+
     const existing = cart.find(
       (p) => p.slug === product.slug
     );
@@ -35,6 +36,21 @@ export function CartProvider({ children }) {
           qty: 1
         }
       ]);
+    }
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "add_to_cart", {
+        currency: "INR",
+        value: product.price,
+        items: [
+          {
+            item_name: product.name,
+            item_id: product._id,
+            item_category: product.category,
+            price: product.price,
+            quantity: 1,
+          },
+        ],
+      });
     }
   };
 
