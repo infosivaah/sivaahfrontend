@@ -2021,68 +2021,88 @@ export default function ProductPage({ product, silverRate }) {
   letter-spacing: 0.08em;
 }
         `}</style>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+       <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
 
-              "@context":
-                "https://schema.org",
+      "@context":
+        "https://schema.org",
 
-              "@type":
-                "Product",
+      "@type":
+        "Product",
 
-              name:
-                product?.pname,
+      name:
+        product?.pname || "",
 
-              image:
-                product?.images || [],
+      image:
+        product?.images?.map(
+          img =>
+            img.startsWith("http")
+              ? img
+              : `https://www.sivaah.in${img}`
+        ) || [],
 
-              description:
-                product?.description ||
+      description:
+        product?.description ||
 
-                `${product?.pname} in premium 925 sterling silver.`,
+        `${product?.pname} handcrafted in premium 925 sterling silver by SIVAAH.`,
 
-              sku:
-                product?._id,
+      sku:
+        product?._id || "",
 
-              brand: {
+      mpn:
+        product?._id || "",
 
-                "@type":
-                  "Brand",
+      brand: {
 
-                name:
-                  "SIVAAH"
-              },
+        "@type":
+          "Brand",
 
-              offers: {
+        name:
+          "SIVAAH"
+      },
 
-                "@type":
-                  "Offer",
+      category:
+        product?.category || "",
 
-                url:
-                  `https://www.sivaah.in/product/${product?.slug}`,
+      offers: {
 
-                priceCurrency:
-                  "INR",
+        "@type":
+          "Offer",
 
-                price:
-                  product?.price,
+        url:
+          `https://www.sivaah.in/product/${product?.slug}`,
 
-                availability:
-                  product?.quantity > 0
+        priceCurrency:
+          "INR",
 
-                    ? "https://schema.org/InStock"
+        price:
+          Number(product?.price || 0),
 
-                    : "https://schema.org/OutOfStock",
+        availability:
+          product?.quantity > 0
 
-                itemCondition:
-                  "https://schema.org/NewCondition"
-              }
+            ? "https://schema.org/InStock"
 
-            })
-          }}
-        />
+            : "https://schema.org/OutOfStock",
+
+        itemCondition:
+          "https://schema.org/NewCondition",
+
+        seller: {
+
+          "@type":
+            "Organization",
+
+          name:
+            "SIVAAH"
+        }
+      }
+
+    })
+  }}
+/>
       </Head>
 
       <div className="pdp-wrap">
