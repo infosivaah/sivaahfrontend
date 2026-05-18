@@ -2021,7 +2021,68 @@ export default function ProductPage({ product, silverRate }) {
   letter-spacing: 0.08em;
 }
         `}</style>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
 
+              "@context":
+                "https://schema.org",
+
+              "@type":
+                "Product",
+
+              name:
+                product?.pname,
+
+              image:
+                product?.images || [],
+
+              description:
+                product?.description ||
+
+                `${product?.pname} in premium 925 sterling silver.`,
+
+              sku:
+                product?._id,
+
+              brand: {
+
+                "@type":
+                  "Brand",
+
+                name:
+                  "SIVAAH"
+              },
+
+              offers: {
+
+                "@type":
+                  "Offer",
+
+                url:
+                  `https://www.sivaah.in/product/${product?.slug}`,
+
+                priceCurrency:
+                  "INR",
+
+                price:
+                  product?.price,
+
+                availability:
+                  product?.quantity > 0
+
+                    ? "https://schema.org/InStock"
+
+                    : "https://schema.org/OutOfStock",
+
+                itemCondition:
+                  "https://schema.org/NewCondition"
+              }
+
+            })
+          }}
+        />
       </Head>
 
       <div className="pdp-wrap">
@@ -2107,7 +2168,7 @@ export default function ProductPage({ product, silverRate }) {
                   </>
                 )}
               </div>
-               {/* Coupon */}
+              {/* Coupon */}
               <div className="pdp-coupon-strip">
 
                 <span>
@@ -2462,7 +2523,7 @@ export default function ProductPage({ product, silverRate }) {
                         </div>
 
                         <div className="pdp-total-sub">
-                         Real silver. Honest pricing. No unnecessary markups.
+                          Real silver. Honest pricing. No unnecessary markups.
                         </div>
 
                       </div>
