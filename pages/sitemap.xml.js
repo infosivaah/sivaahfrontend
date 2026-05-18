@@ -8,100 +8,102 @@ function generateSiteMap({
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 
-  <urlset
-    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  >
+<urlset
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
 
-    <!-- STATIC -->
+<!-- STATIC -->
 
-    <url>
-      <loc>${BASE_URL}</loc>
-    </url>
+<url>
+<loc>${BASE_URL}</loc>
+</url>
 
-    <url>
-      <loc>${BASE_URL}/shop</loc>
-    </url>
+<url>
+<loc>${BASE_URL}/shop</loc>
+</url>
 
-    <!-- CATEGORY PAGES -->
+<!-- CATEGORY PAGES -->
 
-    ${categories.map(category => `
+${categories.map(category => `
 
-      <url>
+<url>
+<loc>${BASE_URL}/collections/${encodeURIComponent(
+    category.name.toLowerCase()
+  )}</loc>
+</url>
 
-        <loc>
+`).join("")}
 
-          ${BASE_URL}/collections/${category.name}
+<!-- PRODUCTS -->
 
-        </loc>
+${products.map(product => `
 
-      </url>
+<url>
+<loc>${BASE_URL}/product/${product.slug}</loc>
+</url>
 
-    `).join("")}
+`).join("")}
 
-    <!-- PRODUCTS -->
-
-    ${products.map(product => `
-
-      <url>
-
-        <loc>
-
-          ${BASE_URL}/product/${product.slug}
-
-        </loc>
-
-      </url>
-
-    `).join("")}
-
-  </urlset>
-  `;
+</urlset>
+`;
 }
 
 export async function getServerSideProps({
   res
 }) {
 
-  const [
-    productsRes,
-    categoriesRes
-  ] = await Promise.all([
+  try {
 
-    fetch(
-      "https://sivaahbackend.onrender.com/api/products"
-    ),
+    const [
+      productsRes,
+      categoriesRes
+    ] = await Promise.all([
 
-    fetch(
-      "https://sivaahbackend.onrender.com/api/categories"
-    )
+      fetch(
+        "https://sivaahbackend.onrender.com/api/products"
+      ),
 
-  ]);
+      fetch(
+        "https://sivaahbackend.onrender.com/api/categories"
+      )
 
-  const products =
-    await productsRes.json();
+    ]);
 
-  const categories =
-    await categoriesRes.json();
+    const products =
+      await productsRes.json();
 
-  const sitemap =
-    generateSiteMap({
+    const categories =
+      await categoriesRes.json();
 
-      products,
-      categories
-    });
+    const sitemap =
+      generateSiteMap({
 
-  res.setHeader(
-    "Content-Type",
-    "text/xml"
-  );
+        products:
+          products || [],
 
-  res.write(sitemap);
+        categories:
+          categories || []
+      });
 
-  res.end();
+    res.setHeader(
+      "Content-Type",
+      "text/xml"
+    );
 
-  return {
-    props: {}
-  };
+    res.write(sitemap);
+
+    res.end();
+
+    return {
+      props: {}
+    };
+
+  } catch (err) {
+
+    return {
+      notFound: true
+    };
+  }
 }
 
 export default function Sitemap() {
