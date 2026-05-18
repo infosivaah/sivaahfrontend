@@ -9,7 +9,9 @@ export default function Checkout() {
     cart,
     totalAmount,
     clearCart,
-    removeFromCart
+    removeFromCart,
+    addToCart,
+    decreaseQuantity
   } = useCart();
 
   const [loading, setLoading] = useState(false);
@@ -23,17 +25,7 @@ export default function Checkout() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState("");
 
-  /* ── Empty cart ── */
-  if (cart.length === 0) {
-    return (
-      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Montserrat', sans-serif" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300, marginBottom: 8 }}>Your cart is empty</div>
-          <div style={{ fontSize: 11, letterSpacing: "0.15em", color: "#8A8678", textTransform: "uppercase" }}>Add pieces to continue</div>
-        </div>
-      </div>
-    );
-  }
+
 
   /* ── Calculations ── */
   const onlineDiscount = paymentMethod === "ONLINE" ? Math.round(totalAmount * 0.05) : 0;
@@ -199,7 +191,17 @@ export default function Checkout() {
       alert("Payment initialization failed");
     }
   };
-
+  /* ── Empty cart ── */
+  if (cart.length === 0) {
+    return (
+      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Montserrat', sans-serif" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300, marginBottom: 8 }}>Your cart is empty</div>
+          <div style={{ fontSize: 11, letterSpacing: "0.15em", color: "#8A8678", textTransform: "uppercase" }}>Add pieces to continue</div>
+        </div>
+      </div>
+    );
+  }
   /* ── UI ── */
   return (
     <>
@@ -467,6 +469,52 @@ export default function Checkout() {
           letter-spacing: 0.1em;
           color: #9B8F78;
         }
+          .ck-qty-wrap {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+}
+
+.ck-qty-btn {
+
+  width: 22px;
+
+  height: 22px;
+
+  border-radius: 50%;
+
+  border:
+    0.5px solid #D9D5C8;
+
+  background:
+    #FAFAF8;
+
+  color:
+    #1C1C1A;
+
+  font-size: 13px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition: 0.2s ease;
+}
+
+.ck-qty-btn:hover {
+
+  background:
+    #F2EDE6;
+}
         .ck-order-item-price {
           font-size: 12px;
           color: #1C1C1A;
@@ -592,6 +640,16 @@ export default function Checkout() {
           height: 0.5px;
           background: #D9D5C8;
         }
+          .ck-shipping-note {
+
+  font-size: 9px;
+
+  color: #9B8F78;
+
+  margin-top: 3px;
+
+  letter-spacing: 0.06em;
+}
       `}</style>
 
       <div className="ck-wrap">
@@ -723,8 +781,32 @@ export default function Checkout() {
                         {item.name}
                       </div>
 
-                      <div className="ck-order-item-qty">
-                        Qty: {item.qty}
+                      <div className="ck-qty-wrap">
+
+                        <button
+                          className="ck-qty-btn"
+
+                          onClick={() =>
+                            decreaseQuantity(item.slug)
+                          }
+                        >
+                          −
+                        </button>
+
+                        <span className="ck-order-item-qty">
+                          {item.qty}
+                        </span>
+
+                        <button
+                          className="ck-qty-btn"
+
+                          onClick={() =>
+                            addToCart(item)
+                          }
+                        >
+                          +
+                        </button>
+
                       </div>
 
                       <button
@@ -763,10 +845,37 @@ export default function Checkout() {
                   )}
 
                   <div className="ck-total-row">
-                    <span>Shipping</span>
-                    <span style={{ color: shippingCharge === 0 ? "#7A8A6E" : "#1C1C1A" }}>
-                      {shippingCharge === 0 ? "Free" : `₹${shippingCharge}`}
+
+                    <span>
+
+                      Shipping
+
+                      {shippingCharge !== 0 && (
+
+                        <div className="ck-shipping-note">
+
+                          Free above ₹1499
+
+                        </div>
+                      )}
+
                     </span>
+
+                    <span
+                      style={{
+                        color:
+                          shippingCharge === 0
+                            ? "#7A8A6E"
+                            : "#1C1C1A"
+                      }}
+                    >
+
+                      {shippingCharge === 0
+                        ? "Free"
+                        : `₹${shippingCharge}`}
+
+                    </span>
+
                   </div>
 
                   <div className="ck-total-divider" />

@@ -89,7 +89,27 @@ export function CartProvider({ children }) {
   const clearCart = () => {
     setCart([]);
   };
+const decreaseQuantity = (slug) => {
 
+  setCart((prev) =>
+
+    prev
+      .map((item) => {
+
+        if (item.slug === slug) {
+
+          return {
+            ...item,
+            qty: item.qty - 1
+          };
+        }
+
+        return item;
+      })
+
+      .filter((item) => item.qty > 0)
+  );
+};
   /* =========================
      TOTAL
   ========================= */
@@ -108,7 +128,8 @@ export function CartProvider({ children }) {
         updateQty,
         removeFromCart,
         clearCart,
-        totalAmount
+        totalAmount,
+        decreaseQuantity
       }}
     >
       {children}

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import ProductSkeleton from "../../components/skeletons/ProductSkeleton";
 import Image from "next/image";
-export default function ProductPage({ product }) {
+export default function ProductPage({ product, silverRate }) {
 
   const router = useRouter();
   if (router.isFallback) {
@@ -15,59 +15,140 @@ export default function ProductPage({ product }) {
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [showPricing, setShowPricing] =
     useState(false);
-  const [silverRate, setSilverRate] = useState(null);
-  useEffect(() => {
+  const [openFaq, setOpenFaq] =
+    useState(null);
+  // const [silverRate, setSilverRate] = useState(null);
+  // useEffect(() => {
 
-    fetch(
-      "https://sivaahbackend.onrender.com/api/rate"
-    )
-      .then((res) => res.json())
-      .then((data) => {
+  //   fetch(
+  //     "https://sivaahbackend.onrender.com/api/rate"
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
 
-        setSilverRate(
-          data.rate
-        );
-      });
+  //       setSilverRate(
+  //         data.rate
+  //       );
+  //     });
 
-  }, []);
+  // }, []);
+  /* ─────────────────────────────
+   TRANSPARENT PRICING CALC
+───────────────────────────── */
+
   const silverValue =
     Math.round(
       product.grams *
       silverRate
     );
 
-  const totalLabour =
+  const overallMaking =
     Math.round(
       product.grams *
       product.labourPerGram
     );
 
-  const packagingValue = 159;
+  /* GST */
 
-  const labourAdjusted =
-    totalLabour -
-    packagingValue;
+  const silverGST =
+    Math.round(
+      silverValue * 0.03
+    );
+
+  const makingGST =
+    Math.round(
+      overallMaking * 0.05
+    );
+
+  const govtTax =
+    silverGST +
+    makingGST;
+
+  /* REMAINING */
+
+  const remainingMaking =
+    overallMaking -
+    govtTax;
+
+  /* CRAFTSMANSHIP */
 
   const craftsmanshipValue =
     Math.round(
-      labourAdjusted * 0.7
+      remainingMaking * 0.5
     );
 
-  const brandValue =
-    labourAdjusted -
+  /* PLATING */
+
+  const remainingAfterCraft =
+    remainingMaking -
     craftsmanshipValue;
 
-  const labourTotal =
-    product.grams &&
-      product.labourPerGram
-      ? Math.round(
-        product.grams *
-        product.labourPerGram
-      )
-      : 0;
+  /* PLATING */
+
+  const platingValue =
+    Math.round(
+      remainingAfterCraft * 0.40
+    );
+
+  /* EXPERIENCE */
+
+  const brandValue =
+    remainingMaking -
+    craftsmanshipValue -
+    platingValue;
+
+  const faqData = [
+
+    {
+      q: "What is 925 sterling silver?",
+
+      a: "925 sterling silver is made with 92.5% pure silver and 7.5% strengthening metals for durability and everyday wear."
+    },
+
+    {
+      q: "Is 925 silver good quality?",
+
+      a: "Yes. 925 sterling silver is considered premium fine jewellery material used worldwide for luxury silver jewellery."
+    },
+
+    {
+      q: "Is 925 silver pure silver?",
+
+      a: "925 silver contains 92.5% pure silver. Pure silver alone is too soft for jewellery, so small strengthening metals are added."
+    },
+
+    {
+      q: "How to check if 925 silver is real?",
+
+      a: "Authentic sterling silver jewellery usually carries a 925 hallmark stamp and BIS hallmark certification."
+    },
+
+    {
+      q: "Does 925 silver tarnish?",
+
+      a: "925 silver may naturally oxidize over time when exposed to air and moisture, but it can easily be cleaned and polished."
+    },
+
+    {
+      q: "How to clean silver jewellery at home?",
+
+      a: "Gently clean your 925 silver jewellery using mild soap, lukewarm water and a soft microfiber cloth. Avoid perfumes, harsh chemicals and chlorine exposure. Store your jewellery in a dry airtight box when not in use to maintain shine longer."
+    },
+
+    {
+      q: "Can I wear 925 silver daily?",
+
+      a: "Yes. 925 sterling silver is durable and suitable for daily wear with proper care."
+    },
+
+    {
+      q: "Is 925 silver waterproof?",
+
+      a: "Occasional water exposure is fine, but avoiding chlorine, perfumes and chemicals helps maintain shine longer."
+    },
 
 
-
+  ];
 
 
 
@@ -161,8 +242,8 @@ export default function ProductPage({ product }) {
 
   }, [product._id]);
   useEffect(() => {
-  window.scrollTo(0, 0);
-}, []);
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
@@ -182,7 +263,41 @@ export default function ProductPage({ product }) {
         {/* OpenGraph */}
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDescription} />
-        <meta property="og:image" content={product.images?.[0]} />
+        {/* <meta property="og:image" content={product.images?.[0]} /> */}
+        <meta
+          property="og:image"
+          content={
+            product.images?.[0]?.replace(
+              "/upload/",
+              "/upload/w_1200,h_1200,c_fill,q_auto,f_auto/"
+            )
+          }
+        />
+
+        <meta
+          property="og:image:secure_url"
+          content={
+            product.images?.[0]?.replace(
+              "/upload/",
+              "/upload/w_1200,h_1200,c_fill,q_auto,f_auto/"
+            )
+          }
+        />
+
+        <meta
+          property="og:image:type"
+          content="image/jpeg"
+        />
+
+        <meta
+          property="og:image:width"
+          content="1200"
+        />
+
+        <meta
+          property="og:image:height"
+          content="1200"
+        />
         <meta property="og:type" content="product" />
         <meta property="og:url" content={canonical} />
 
@@ -199,7 +314,142 @@ export default function ProductPage({ product }) {
           href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
           rel="stylesheet"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
 
+              "@context":
+                "https://schema.org",
+
+              "@type":
+                "FAQPage",
+
+              mainEntity: [
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "What is 925 sterling silver?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "925 sterling silver is a premium silver alloy made with 92.5% pure silver and 7.5% strengthening metals for durability and everyday wear."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "Is 925 silver good quality?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "Yes. 925 sterling silver is considered high-quality fine jewellery material used worldwide for premium jewellery."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "Is 925 silver pure silver?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "925 silver contains 92.5% pure silver. The remaining 7.5% is added for strength and durability."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "How to check if 925 silver is real?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "Real sterling silver jewellery usually carries a 925 hallmark stamp. You can also verify authenticity through BIS hallmarking and jeweller certification."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "Does 925 silver tarnish?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "925 silver can naturally oxidize over time when exposed to air and moisture, but it can easily be cleaned and polished."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "How to clean silver jewellery at home?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "You can clean sterling silver jewellery gently using mild soap, warm water and a soft cloth. Avoid harsh chemicals."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "Can I wear 925 silver daily?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "Yes. 925 sterling silver jewellery is durable and suitable for daily wear with proper care."
+                  }
+                },
+
+                {
+                  "@type": "Question",
+
+                  name:
+                    "Is 925 silver waterproof?",
+
+                  acceptedAnswer: {
+
+                    "@type": "Answer",
+
+                    text:
+                      "925 silver can handle occasional water exposure, but avoiding perfumes, chlorine and chemicals helps maintain shine longer."
+                  }
+                }
+              ]
+            })
+          }}
+        />
         {/* Google Rich Product */}
         <script
           type="application/ld+json"
@@ -568,16 +818,24 @@ export default function ProductPage({ product }) {
             border-radius: 2px;
           }
 
-          .pdp-stock {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: #A0795A;
-            margin-bottom: 1.5rem;
-          }
+        .pdp-stock {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 10px;
+
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+
+  color: #A0795A;
+
+  margin-bottom: 1.4rem;
+}
           .pdp-stock-dot {
             width: 6px;
             height: 6px;
@@ -1130,7 +1388,640 @@ export default function ProductPage({ product }) {
     font-size: 22px;
   }
 }
+  .seo-copy {
+
+  margin-top: 22px;
+
+  font-size: 13px;
+
+  line-height: 1.9;
+
+  color: #5E584D;
+}
+  /* ─────────────────────────────────────────
+   FAQ SECTION
+───────────────────────────────────────── */
+
+.pdp-faq-wrap {
+
+  margin-top: 1rem;
+
+  border-top:
+    0.5px solid #E8DED1;
+}
+
+.pdp-faq-item {
+
+  border-bottom:
+    0.5px solid #E8DED1;
+}
+
+.pdp-faq-question {
+
+  width: 100%;
+
+  background: none;
+
+  border: none;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  padding: 18px 0;
+
+  cursor: pointer;
+
+  text-align: left;
+
+  color: #1C1C1A;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  line-height: 1.7;
+}
+
+.faq-arrow {
+
+  font-size: 22px;
+
+  color: #8A8678;
+
+  transition: 0.35s ease;
+
+  flex-shrink: 0;
+}
+
+.faq-arrow.open {
+
+  transform: rotate(45deg);
+}
+
+.pdp-faq-answer {
+
+  max-height: 0;
+
+  overflow: hidden;
+
+  opacity: 0;
+
+  transition:
+    max-height 0.4s ease,
+    opacity 0.3s ease;
+
+  padding-right: 28px;
+}
+
+.pdp-faq-answer.show {
+
+  max-height: 220px;
+
+  opacity: 1;
+
+  padding-bottom: 18px;
+}
+
+.pdp-faq-answer p {
+
+  font-size: 12px;
+
+  line-height: 1.9;
+
+  color: #6A655B;
+
+  margin: 0;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .pdp-faq-question {
+
+    font-size: 12px;
+
+    padding: 16px 0;
+  }
+
+  .faq-arrow {
+
+    font-size: 18px;
+  }
+
+  .pdp-faq-answer p {
+
+    font-size: 11px;
+  }
+}
+  /* SHARE BUTTON */
+
+.pdp-share-btn {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  background: none;
+
+  border: none;
+
+  padding: 15px 10px;
+
+  cursor: pointer;
+
+  color: #7A6E58;
+
+  font-size: 10px;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  transition: 0.3s ease;
+}
+
+.pdp-share-btn:hover {
+
+  color: #1C1C1A;
+}
+
+.share-icon {
+
+  width: 16px;
+
+  height: 16px;
+
+  stroke: currentColor;
+
+  fill: none;
+
+  stroke-width: 1.7;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+  /* BREADCRUMBS */
+
+.pdp-breadcrumbs {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 1.2rem;
+
+  font-size: 10px;
+
+  color: #9B8F78;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.pdp-breadcrumbs a {
+
+  color: inherit;
+
+  text-decoration: none;
+}
+.pdp-delivery {
+
+  font-size: 12px;
+
+  color: #6F685D;
+
+  margin-bottom: 10px;
+
+  line-height: 1.6;
+}
+
+.pdp-delivery strong {
+
+  color: #1C1C1A;
+
+  font-weight: 600;
+}
+  /* ─────────────────────────────
+   NEW PRICING UI
+───────────────────────────── */
+/* ─────────────────────────────
+   LUXURY TRANSPARENT PRICING
+───────────────────────────── */
+
+.pdp-price-breakdown {
+
+  margin-top: 4px;
+
+  border:
+    0.5px solid #E5DDD0;
+
+  background:
+    #FCFAF7;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+}
+
+/* TOP */
+
+.pdp-pricing-top {
+
+  padding:
+    18px 18px 14px;
+
+  border-bottom:
+    0.5px solid #EEE5D8;
+}
+
+.pdp-pricing-name {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-size: 24px;
+
+  font-weight: 500;
+
+  line-height: 1.1;
+
+  color: #1C1C1A;
+
+  margin-bottom: 8px;
+}
+
+.pdp-pricing-meta {
+
+  font-size: 11px;
+
+  line-height: 1.8;
+
+  color: #787264;
+
+  letter-spacing: 0.01em;
+}
+
+/* ROWS */
+
+.pdp-break-row {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding:
+    15px 18px;
+
+  border-bottom:
+    0.5px solid #EEE5D8;
+}
+
+/* LEFT */
+
+.pdp-break-title {
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #1F1F1B;
+
+  margin-bottom: 3px;
+
+  letter-spacing: 0.01em;
+}
+
+.pdp-break-sub {
+
+  font-size: 11px;
+
+  line-height: 1.7;
+
+  color: #8B8579;
+}
+
+/* RIGHT */
+
+.pdp-break-price {
+
+  font-size: 14px;
+
+  font-weight: 400;
+
+  color: #4B463D;
+
+  white-space: nowrap;
+
+  letter-spacing: -0.01em;
+
+  padding-top: 1px;
+}
+
+/* TOTAL */
+
+.pdp-break-total {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: flex-start;
+
+  gap: 20px;
+
+  padding:
+    20px 18px;
+
+  background:
+    #FAF7F2;
+}
+
+.pdp-total-title {
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  color: #1C1C1A;
+
+  margin-bottom: 7px;
+}
+
+.pdp-total-sub {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  background:
+    #EEF5E7;
+
+  color:
+    #537241;
+
+  padding:
+    5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.01em;
+
+  text-transform: none;
+}
+
+.pdp-total-sub::before {
+
+  content: "✦";
+
+  font-size: 9px;
+}
+
+.pdp-break-total > div:last-child {
+
+  font-family:
+    'Cormorant Garamond',
+    serif;
+
+  font-size: 46px;
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  letter-spacing: -0.03em;
+
+  color: #1C1C1A;
+}
+
+/* NOTE */
+
+.pdp-pricing-note {
+
+  margin-top: 16px;
+
+  font-size: 12px;
+
+  line-height: 1.95;
+
+  color: #625C52;
+}
+
+.pdp-pricing-note strong {
+
+  color: #1C1C1A;
+
+  font-weight: 600;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .pdp-pricing-name {
+
+    font-size: 21px;
+  }
+
+  .pdp-pricing-meta {
+
+    font-size: 10px;
+  }
+
+  .pdp-break-row {
+
+    padding:
+      14px 15px;
+  }
+
+  .pdp-break-title {
+
+    font-size: 12px;
+  }
+
+  .pdp-break-sub {
+
+    font-size: 10px;
+  }
+
+  .pdp-break-price {
+
+    font-size: 13px;
+  }
+
+  .pdp-break-total {
+
+    padding:
+      18px 15px;
+  }
+
+  .pdp-break-total > div:last-child {
+
+    font-size: 38px;
+  }
+
+  .pdp-pricing-note {
+
+    font-size: 11px;
+  }
+}
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .pdp-pricing-name {
+
+    font-size: 22px;
+  }
+
+  .pdp-break-title {
+
+    font-size: 17px;
+  }
+
+  .pdp-break-price {
+
+    font-size: 15px;
+  }
+
+  .pdp-break-total {
+
+    font-size: 28px;
+  }
+
+  .pdp-total-title {
+
+    font-size: 20px;
+  }
+}
+  .pdp-coupon-note {
+
+  padding:
+    14px 18px;
+
+  border-top:
+    0.5px solid #EEE5D8;
+
+  font-size: 11px;
+
+  color: #6B655B;
+
+  background:
+    #FCFAF7;
+}
+
+.pdp-coupon-note span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin:
+    0 4px;
+
+  padding:
+    4px 8px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(176,141,87,0.12);
+
+  color:
+    #8C6B3F;
+
+  font-weight: 600;
+
+  letter-spacing: 0.06em;
+
+  font-size: 10px;
+}
+  /* COUPON STRIP */
+
+.pdp-coupon-strip {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+
+  margin:
+    10px 0 18px;
+
+  padding:
+    10px 14px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(176,141,87,0.08);
+
+  color:
+    #6A614F;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+.pdp-coupon-strip span {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding:
+    4px 8px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(176,141,87,0.14);
+
+  color:
+    #8C6B3F;
+
+  font-size: 10px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+}
         `}</style>
+
       </Head>
 
       <div className="pdp-wrap">
@@ -1181,7 +2072,25 @@ export default function ProductPage({ product }) {
 
             {/* ── RIGHT: Content column ── */}
             <div className="pdp-content">
+              <div className="pdp-breadcrumbs">
 
+                <a href="/">
+                  Home
+                </a>
+
+                <span>/</span>
+
+                <a href="/shop">
+                  Shop
+                </a>
+
+                <span>/</span>
+
+                <span>
+                  {product.category}
+                </span>
+
+              </div>
               <div className="pdp-emotion">{product.emotion}</div>
               <h1 className="pdp-title">{product.name}</h1>
               <div className="pdp-subtitle">{product.subtitle}</div>
@@ -1198,9 +2107,36 @@ export default function ProductPage({ product }) {
                   </>
                 )}
               </div>
+               {/* Coupon */}
+              <div className="pdp-coupon-strip">
 
+                <span>
+                  SIVAAH10
+                </span>
+
+                Enjoy 10% welcome savings at checkout
+
+              </div>
               {/* Stock */}
+              <div className="pdp-delivery">
+
+                Free delivery by
+                <strong>
+                  {" "}
+                  {new Date(
+                    Date.now() + 5 * 24 * 60 * 60 * 1000
+                  ).toLocaleDateString(
+                    "en-IN",
+                    {
+                      day: "numeric",
+                      month: "short"
+                    }
+                  )}
+                </strong>
+
+              </div>
               <div className="pdp-stock">
+
                 <span className="pdp-stock-dot" />
                 Only a few pieces remain
               </div>
@@ -1224,7 +2160,65 @@ export default function ProductPage({ product }) {
               >
                 Add to Cart
               </button>
+              <button
+                className="pdp-share-btn"
 
+                onClick={async () => {
+
+                  const shareData = {
+
+                    title:
+                      product.name,
+
+                    text:
+                      `Check out this ${product.name} from SIVAAH ✨`,
+
+                    url:
+                      `https://sivaah.in/product/${product.slug}`
+                  };
+
+                  try {
+
+                    if (
+                      navigator.share
+                    ) {
+
+                      await navigator.share(
+                        shareData
+                      );
+
+                    } else {
+
+                      await navigator.clipboard.writeText(
+                        shareData.url
+                      );
+
+                      setShowCartPopup(true);
+                    }
+
+                  } catch (err) {
+
+                    console.log(err);
+                  }
+                }}
+              >
+
+                <svg
+                  viewBox="0 0 24 24"
+                  className="share-icon"
+                >
+
+                  <path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7" />
+
+                  <path d="M16 6l-4-4-4 4" />
+
+                  <path d="M12 2v13" />
+
+                </svg>
+
+                Share this piece
+
+              </button>
               {/* Trust strip */}
               <div className="pdp-trust-row">
                 <div className="pdp-trust-item">
@@ -1277,6 +2271,17 @@ export default function ProductPage({ product }) {
               {/* Description */}
               <div className="pdp-section-label">About this piece</div>
               <p className="pdp-desc">{product.description}</p>
+              <div className="seo-copy">
+
+                Crafted in genuine 925 sterling silver,
+                this {product.name} blends timeless
+                elegance with modern minimalism.
+                Designed for everyday luxury, gifting
+                and special occasions, every SIVAAH
+                piece is BIS hallmarked and crafted
+                for long-lasting shine and comfort.
+
+              </div>
               {/* TRANSPARENT PRICING */}
 
               {/* TRANSPARENT PRICING */}
@@ -1316,6 +2321,25 @@ export default function ProductPage({ product }) {
 
                   <div className="pdp-price-breakdown">
 
+                    {/* HEADER */}
+
+                    <div className="pdp-pricing-top">
+
+                      <div className="pdp-pricing-name">
+                        925 Sterling Silver Jewellery
+                      </div>
+
+                      <div className="pdp-pricing-meta">
+
+                        {product.grams}g •
+                        BIS 925 hallmarked •
+                        Rhodium plated •
+                        Pan India delivery
+
+                      </div>
+
+                    </div>
+
                     {/* SILVER */}
 
                     <div className="pdp-break-row">
@@ -1323,17 +2347,39 @@ export default function ProductPage({ product }) {
                       <div>
 
                         <div className="pdp-break-title">
-                          Silver Value
+                          Pure 925 Silver
                         </div>
 
                         <div className="pdp-break-sub">
-                          {product.grams}gm × ₹{silverRate}
+                          {product.grams}g × ₹{silverRate}/g
                         </div>
 
                       </div>
 
                       <div className="pdp-break-price">
                         ₹{silverValue}
+                      </div>
+
+                    </div>
+
+                    {/* GST */}
+
+                    <div className="pdp-break-row">
+
+                      <div>
+
+                        <div className="pdp-break-title">
+                          Govt. GST & Taxes
+                        </div>
+
+                        <div className="pdp-break-sub">
+                          3% on silver + 5% on making
+                        </div>
+
+                      </div>
+
+                      <div className="pdp-break-price">
+                        ₹{govtTax}
                       </div>
 
                     </div>
@@ -1349,7 +2395,7 @@ export default function ProductPage({ product }) {
                         </div>
 
                         <div className="pdp-break-sub">
-                          Designing, polishing, & detailing
+                          Designing, filing, polishing & detailing by skilled artisans
                         </div>
 
                       </div>
@@ -1360,24 +2406,24 @@ export default function ProductPage({ product }) {
 
                     </div>
 
-                    {/* PACKAGING */}
+                    {/* PLATING */}
 
                     <div className="pdp-break-row">
 
                       <div>
 
                         <div className="pdp-break-title">
-                          Plating & Hallmark
+                          Rhodium Plating & Hallmark
                         </div>
 
                         <div className="pdp-break-sub">
-                          Rhodium plating for lasting shine & BIS marking
+                          Anti Tarnish Rhodium plating for lasting shine & BIS 925 certification
                         </div>
 
                       </div>
 
                       <div className="pdp-break-price">
-                        {packagingValue}
+                        ₹{platingValue}
                       </div>
 
                     </div>
@@ -1389,11 +2435,12 @@ export default function ProductPage({ product }) {
                       <div>
 
                         <div className="pdp-break-title">
-                          Brand Experience & Fulfilment
+                          Brand Experience & Fulfillment
+
                         </div>
 
                         <div className="pdp-break-sub">
-                          Quality checks, support & delivery
+                          quality check, maintainence & fulfilment
                         </div>
 
                       </div>
@@ -1404,24 +2451,38 @@ export default function ProductPage({ product }) {
 
                     </div>
 
-
-
-
-
                     {/* TOTAL */}
 
                     <div className="pdp-break-total">
 
-                      <span>
-                        You Pay
-                      </span>
+                      <div>
 
-                      <span>
+                        <div className="pdp-total-title">
+                          You Pay
+                        </div>
+
+                        <div className="pdp-total-sub">
+                         Real silver. Honest pricing. No unnecessary markups.
+                        </div>
+
+                      </div>
+
+                      <div>
                         ₹{product.price}
-                      </span>
+                      </div>
 
                     </div>
+                    <div className="pdp-coupon-note">
 
+                      Use code
+
+                      <span>
+                        SIVAAH10
+                      </span>
+
+                      for extra savings at checkout
+
+                    </div>
                   </div>
 
                   <div className="pdp-pricing-note">
@@ -1481,7 +2542,66 @@ export default function ProductPage({ product }) {
               >
                 Add Review
               </button>
+              {/* FAQ SECTION */}
 
+              <div className="pdp-section-label">
+                Silver Jewellery FAQs
+              </div>
+
+              <div className="pdp-faq-wrap">
+
+                {faqData.map((faq, i) => (
+
+                  <div
+                    className="pdp-faq-item"
+                    key={i}
+                  >
+
+                    <button
+                      className="pdp-faq-question"
+
+                      onClick={() =>
+                        setOpenFaq(
+                          openFaq === i
+                            ? null
+                            : i
+                        )
+                      }
+                    >
+
+                      <span>
+                        {faq.q}
+                      </span>
+
+                      <span
+                        className={`faq-arrow ${openFaq === i
+                          ? "open"
+                          : ""
+                          }`}
+                      >
+                        +
+                      </span>
+
+                    </button>
+
+                    <div
+                      className={`pdp-faq-answer ${openFaq === i
+                        ? "show"
+                        : ""
+                        }`}
+                    >
+
+                      <p>
+                        {faq.a}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
               {/* Hallmark guarantee */}
               <div className="pdp-hallmark">
                 <svg className="pdp-hallmark-icon" viewBox="0 0 24 24">
@@ -1586,30 +2706,51 @@ export async function getStaticProps({ params }) {
 
   try {
 
-    const res = await fetch(
-      `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`
-    );
+    const [
+      productRes,
+      rateRes
+    ] = await Promise.all([
 
-    if (!res.ok) {
+      fetch(
+        `https://sivaahbackend.onrender.com/api/products/slug/${params.slug}`
+      ),
+
+      fetch(
+        "https://sivaahbackend.onrender.com/api/rate"
+      )
+
+    ]);
+
+    if (!productRes.ok) {
+
       return {
-        notFound: true,
+        notFound: true
       };
     }
 
-    const product = await res.json();
+    const product =
+      await productRes.json();
+
+    const rateData =
+      await rateRes.json();
 
     return {
+
       props: {
+
         product,
+
+        silverRate:
+          rateData.rate || 0
       },
 
-      revalidate: 3600,
+      revalidate: 3600
     };
 
   } catch {
 
     return {
-      notFound: true,
+      notFound: true
     };
   }
 }

@@ -5,7 +5,6 @@ import ProductCard from "../components/ProductCard";
 import ProductGridSkeleton from "../components/skeletons/ProductGridSkeleton";
 
 export default function ShopPage({
-  products,
   categories
 }) {
 
@@ -19,59 +18,109 @@ export default function ShopPage({
   } = router.query;
 
   const [loading, setLoading] =
-    useState(false);
+    useState(true);
 
   const [mobileFilters, setMobileFilters] =
     useState(false);
+ const [items, setItems] =
+  useState([]);
 
+  const [page, setPage] =
+    useState(1);
+
+  const [loadingMore, setLoadingMore] =
+    useState(false);
+
+  const [hasMoreProducts, setHasMoreProducts] =
+    useState(false);
+/* INITIAL FETCH */
+
+useEffect(() => {
+
+  const fetchProducts =
+    async () => {
+
+    try {
+
+      const res = await fetch(
+
+        "http://localhost:5000/api/products/paginated?page=1&limit=12"
+
+      );
+
+      const data =
+        await res.json();
+
+      setItems(
+        data.products || []
+      );
+
+      setHasMoreProducts(
+        data.hasMore
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+    } finally {
+
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+
+}, []);
   /* LOADING */
 
-  useEffect(() => {
+ 
 
-    const start = () => setLoading(true);
+  //   const start = () => setLoading(true);
 
-    const end = () => setLoading(false);
+  //   const end = () => setLoading(false);
 
-    router.events.on(
-      "routeChangeStart",
-      start
-    );
+  //   router.events.on(
+  //     "routeChangeStart",
+  //     start
+  //   );
 
-    router.events.on(
-      "routeChangeComplete",
-      end
-    );
+  //   router.events.on(
+  //     "routeChangeComplete",
+  //     end
+  //   );
 
-    router.events.on(
-      "routeChangeError",
-      end
-    );
+  //   router.events.on(
+  //     "routeChangeError",
+  //     end
+  //   );
 
-    return () => {
+  //   return () => {
 
-      router.events.off(
-        "routeChangeStart",
-        start
-      );
+  //     router.events.off(
+  //       "routeChangeStart",
+  //       start
+  //     );
 
-      router.events.off(
-        "routeChangeComplete",
-        end
-      );
+  //     router.events.off(
+  //       "routeChangeComplete",
+  //       end
+  //     );
 
-      router.events.off(
-        "routeChangeError",
-        end
-      );
-    };
+  //     router.events.off(
+  //       "routeChangeError",
+  //       end
+  //     );
+  //   };
 
-  }, [router]);
+  // }, [router]);
 
   /* FILTER */
 
   const filteredProducts = useMemo(() => {
 
-    let list = [...products];
+    // let list = [...products];
+    let list = [...items];
 
     if (category) {
 
@@ -79,7 +128,7 @@ export default function ShopPage({
         p =>
           p.category &&
           p.category.toLowerCase() ===
-            category.toLowerCase()
+          category.toLowerCase()
       );
     }
 
@@ -130,13 +179,56 @@ export default function ShopPage({
     return list;
 
   }, [
-    products,
+    items,
     category,
     maxPrice,
     search,
     sort
   ]);
 
+  /* LOAD MORE */
+
+  const loadMoreProducts =
+    async () => {
+
+      try {
+
+        setLoadingMore(true);
+
+        const nextPage =
+          page + 1;
+
+        const res = await fetch(
+
+          `http://localhost:5000/api/products/paginated?page=${nextPage}&limit=8`
+
+        );
+
+        const data =
+          await res.json();
+
+        setItems(prev => [
+
+          ...prev,
+
+          ...data.products
+        ]);
+
+        setPage(nextPage);
+
+        setHasMoreProducts(
+          data.hasMore
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+      } finally {
+
+        setLoadingMore(false);
+      }
+    };
   /* QUERY */
 
   const updateQuery = (
@@ -608,8 +700,8 @@ export default function ShopPage({
             transform:
               translateY(
                 ${mobileFilters
-                  ? "0%"
-                  : "105%"}
+          ? "0%"
+          : "105%"}
               );
 
             transition: 0.35s ease;
@@ -728,7 +820,80 @@ export default function ShopPage({
             font-size: 13px;
           }
         }
+          /* LOAD MORE */
 
+.load-more-wrap {
+
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 50px;
+
+  margin-bottom: 70px;
+}
+/* SKELETON */
+
+.skeleton-wrap {
+
+  margin-top: 18px;
+}
+
+.skeleton-card {
+
+  aspect-ratio: 0.75;
+
+  border-radius: 26px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f5efe7 20%,
+      #ece3d7 50%,
+      #f5efe7 80%
+    );
+
+  background-size:
+    220% 100%;
+
+  animation:
+    shimmer 1.4s infinite;
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+.skeleton-card::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 14px;
+
+  right: 14px;
+
+  bottom: 18px;
+
+  height: 70px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.35);
+}
+
+@keyframes shimmer {
+
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
       `}</style>
 
       <div className="shop-wrap">
@@ -827,14 +992,14 @@ export default function ShopPage({
                 {categories.map(
                   (cat, i) => (
 
-                  <option
-                    key={i}
-                    value={cat}
-                  >
-                    {cat}
-                  </option>
+                    <option
+                      key={i}
+                      value={cat}
+                    >
+                      {cat}
+                    </option>
 
-                ))}
+                  ))}
 
               </select>
 
@@ -927,11 +1092,10 @@ export default function ShopPage({
         <div className="chip-row">
 
           <button
-            className={`lux-chip ${
-              !category
-                ? "active"
-                : ""
-            }`}
+            className={`lux-chip ${!category
+              ? "active"
+              : ""
+              }`}
 
             onClick={() =>
               updateQuery(
@@ -948,11 +1112,10 @@ export default function ShopPage({
             <button
               key={i}
 
-              className={`lux-chip ${
-                category === cat
-                  ? "active"
-                  : ""
-              }`}
+              className={`lux-chip ${category === cat
+                ? "active"
+                : ""
+                }`}
 
               onClick={() =>
                 updateQuery(
@@ -1030,22 +1193,60 @@ export default function ShopPage({
             {filteredProducts.map(
               (product) => (
 
-              <div
-                key={product._id}
-              >
+                <div
+                  key={product._id}
+                >
 
-                <ProductCard
-                  product={product}
-                />
+                  <ProductCard
+                    product={product}
+                  />
 
-              </div>
+                </div>
 
-            ))}
+              ))}
 
           </div>
 
         )}
+        {loadingMore && (
 
+  <div className="products-grid skeleton-wrap">
+
+    {Array.from({
+      length: 4
+    }).map((_, i) => (
+
+      <div
+        key={i}
+        className="skeleton-card"
+      />
+
+    ))}
+
+  </div>
+
+)}
+        {hasMoreProducts && (
+
+          <div className="load-more-wrap">
+
+            <button
+              className="lux-btn"
+
+              onClick={loadMoreProducts}
+
+              disabled={loadingMore}
+            >
+
+              {loadingMore
+                ? "Loading..."
+                : "Load More"}
+
+            </button>
+
+          </div>
+
+        )}
       </div>
 
     </>
@@ -1058,23 +1259,10 @@ export async function getServerSideProps() {
 
   try {
 
-    const [
-      productsRes,
-      categoriesRes
-    ] = await Promise.all([
-
-      fetch(
-        "https://sivaahbackend.onrender.com/api/products"
-      ),
-
-      fetch(
+    const categoriesRes =
+      await fetch(
         "https://sivaahbackend.onrender.com/api/categories"
-      )
-
-    ]);
-
-    const products =
-      await productsRes.json();
+      );
 
     const categoriesRaw =
       await categoriesRes.json();
@@ -1083,9 +1271,6 @@ export async function getServerSideProps() {
 
       props: {
 
-        products:
-          products || [],
-
         categories:
           categoriesRaw.map(
             c => c.name
@@ -1093,16 +1278,123 @@ export async function getServerSideProps() {
       }
     };
 
-  } catch (err) {
+  } catch {
 
     return {
 
       props: {
-
-        products: [],
 
         categories: []
       }
     };
   }
 }
+// export async function getServerSideProps() {
+
+//   try {
+
+//     const [
+//       productsRes,
+//       categoriesRes
+//     ] = await Promise.all([
+
+//       fetch(
+//         "http://localhost:5000/api/products/paginated?page=1&limit=12"
+//       ),
+
+//       fetch(
+//         "https://sivaahbackend.onrender.com/api/categories"
+//       )
+
+//     ]);
+
+//     const productsData =
+//       await productsRes.json();
+
+//     const categoriesRaw =
+//       await categoriesRes.json();
+
+//     return {
+
+//       props: {
+
+//         initialProducts:
+//           productsData.products || [],
+
+//         hasMore:
+//           productsData.hasMore || false,
+
+//         categories:
+//           categoriesRaw.map(
+//             c => c.name
+//           )
+//       }
+//     };
+
+//   } catch (err) {
+
+//     return {
+
+//       props: {
+
+//         initialProducts: [],
+
+//         hasMore: false,
+
+//         categories: []
+//       }
+//     };
+//   }
+// }
+// export async function getServerSideProps() {
+
+//   try {
+
+//     const [
+//       productsRes,
+//       categoriesRes
+//     ] = await Promise.all([
+
+//       fetch(
+//         "https://sivaahbackend.onrender.com/api/products"
+//       ),
+
+//       fetch(
+//         "https://sivaahbackend.onrender.com/api/categories"
+//       )
+
+//     ]);
+
+//     const products =
+//       await productsRes.json();
+
+//     const categoriesRaw =
+//       await categoriesRes.json();
+
+//     return {
+
+//       props: {
+
+//         products:
+//           products || [],
+
+//         categories:
+//           categoriesRaw.map(
+//             c => c.name
+//           )
+//       }
+//     };
+
+//   } catch (err) {
+
+//     return {
+
+//       props: {
+
+//         products: [],
+
+//         categories: []
+//       }
+//     };
+//   }
+// }

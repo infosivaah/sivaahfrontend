@@ -2,16 +2,19 @@ import Head from "next/head";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 export default function Home({
   products,
   categories,
   carousel
 }) {
+const router = useRouter();
+useEffect(() => {
 
-  const bestsellers = products?.slice(0, 4);
-  const [visibleCount, setVisibleCount] = useState(8);
-  const [loadingMore, setLoadingMore] = useState(false);
+  router.prefetch("/shop");
+
+}, []);
   return (
     <>
       <Head>
@@ -933,6 +936,89 @@ h6 {
   margin: 0;
   font-weight: inherit;
 }
+  /* HOME SHOP CTA */
+
+.home-shop-cta {
+
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 60px;
+}
+
+.view-all-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 18px 34px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d8b786,
+      #b88b4a
+    );
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+
+  box-shadow:
+    0 14px 32px rgba(184,139,74,0.24);
+
+  transition: 0.35s ease;
+}
+
+.view-all-btn:hover {
+
+  transform:
+    translateY(-3px);
+
+  color: white;
+
+  gap: 16px;
+}
+
+.view-all-btn span {
+
+  font-size: 16px;
+
+  transition: 0.35s;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .home-shop-cta {
+
+    margin-top: 40px;
+  }
+
+  .view-all-btn {
+
+    width: 100%;
+
+    justify-content: center;
+
+    padding: 16px 22px;
+
+    font-size: 11px;
+  }
+}
 
 `}</style>
 
@@ -1003,6 +1089,7 @@ h6 {
 
             <Link
               href="/shop"
+              prefetch={true}
               className="btn-main"
             >
               Shop Now
@@ -1010,6 +1097,7 @@ h6 {
 
             <Link
               href="/shop"
+              prefetch={true}
               className="btn-outline"
             >
               Explore Collection
@@ -1120,7 +1208,7 @@ h6 {
 
           <div className="product-grid">
 
-            {products?.slice(0, visibleCount).map((product) => (
+            {products.map((product) => (
 
               <div
                 key={product._id}
@@ -1134,36 +1222,29 @@ h6 {
               </div>
 
             ))}
-            {loadingMore &&
-              Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={`skeleton-${i}`}
-                  className="skeleton-card"
-                />
-              ))}
+          
 
           </div>
-          {visibleCount < products.length && (
-            <div style={{ textAlign: "center", marginTop: "50px" }}>
-              <button
-                className="btn-main"
-                onClick={() => {
-                  setLoadingMore(true);
-
-                  setTimeout(() => {
-                    setVisibleCount((prev) => prev + 8);
-                    setLoadingMore(false);
-                  }, 800);
-                }}
-              >
-                {loadingMore
-                  ? "Loading..."
-                  : "Load More"}
-              </button>
-            </div>)}
+         
 
         </div>
+<div className="home-shop-cta">
 
+  <Link
+    href="/shop"
+    prefetch={true}
+    className="view-all-btn"
+  >
+
+    Explore Full Collection
+
+    <span>
+      →
+    </span>
+
+  </Link>
+
+</div>
       </section>
       {/* TRUST SECTION */}
 
@@ -1440,7 +1521,7 @@ export async function getStaticProps() {
       carouselRes
     ] = await Promise.all([
       fetch(
-        "https://sivaahbackend.onrender.com/api/products"
+        "https://sivaahbackend.onrender.com/api/products/featured"
       ),
       fetch(
         "https://sivaahbackend.onrender.com/api/categories"

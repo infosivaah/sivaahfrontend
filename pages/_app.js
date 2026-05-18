@@ -11,8 +11,8 @@ import { useEffect } from "react";
 // 🔥 Configure progress bar
 NProgress.configure({
   showSpinner: false,
-  trickleSpeed: 120,
-  minimum: 0.2
+  trickleSpeed: 80,
+  minimum: 0.08
 });
 Router.events.on("routeChangeStart", () => {
   NProgress.start();
