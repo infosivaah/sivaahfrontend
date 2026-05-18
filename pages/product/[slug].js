@@ -183,7 +183,7 @@ export default function ProductPage({ product, silverRate }) {
     product.description?.slice(0, 160) ||
     `Buy ${product.name} in pure 925 sterling silver. Premium spiritual jewellery by SIVAAH.`;
 
-  const canonical = `https://sivaah.in/product/${product.slug}`;
+  const canonical = `https://www.sivaah.in/product/${product.slug}`;
   const [reviews, setReviews] = useState([]);
 
   const [showReviewModal, setShowReviewModal] =
