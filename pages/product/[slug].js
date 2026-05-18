@@ -2021,39 +2021,86 @@ export default function ProductPage({ product, silverRate }) {
       category:
         product?.category || "",
 
-      offers: {
+   offers: {
 
-        "@type":
-          "Offer",
+  "@type":
+    "Offer",
 
-        url:
-          `https://www.sivaah.in/product/${product?.slug}`,
+  url:
+    `https://www.sivaah.in/product/${product?.slug}`,
 
-        priceCurrency:
-          "INR",
+  priceCurrency:
+    "INR",
 
-        price:
-          Number(product?.price || 0),
+  price:
+    Number(product?.price || 0),
 
-        availability:
-          product?.quantity > 0
+  availability:
+    product?.quantity > 0
 
-            ? "https://schema.org/InStock"
+      ? "https://schema.org/InStock"
 
-            : "https://schema.org/OutOfStock",
+      : "https://schema.org/OutOfStock",
 
-        itemCondition:
-          "https://schema.org/NewCondition",
+  itemCondition:
+    "https://schema.org/NewCondition",
 
-        seller: {
+  seller: {
 
-          "@type":
-            "Organization",
+    "@type":
+      "Organization",
 
-          name:
-            "SIVAAH"
-        }
-      }
+    name:
+      "SIVAAH"
+  },
+
+  shippingDetails: {
+
+    "@type":
+      "OfferShippingDetails",
+
+    shippingRate: {
+
+      "@type":
+        "MonetaryAmount",
+
+      value: "0",
+
+      currency: "INR"
+    },
+
+    shippingDestination: {
+
+      "@type":
+        "DefinedRegion",
+
+      addressCountry:
+        "IN"
+    }
+
+  },
+
+  hasMerchantReturnPolicy: {
+
+    "@type":
+      "MerchantReturnPolicy",
+
+    applicableCountry:
+      "IN",
+
+    returnPolicyCategory:
+      "https://schema.org/MerchantReturnFiniteReturnWindow",
+
+    merchantReturnDays:
+      7,
+
+    returnMethod:
+      "https://schema.org/ReturnByMail",
+
+    returnFees:
+      "https://schema.org/FreeReturn"
+  }
+}
 
     })
   }}
