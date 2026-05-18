@@ -450,52 +450,7 @@ export default function ProductPage({ product, silverRate }) {
             })
           }}
         />
-        {/* Google Rich Product */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org/",
-              "@type": "Product",
-
-              name: product.name,
-
-              image: product.images,
-
-              description:
-                seoDescription ||
-                "Premium 925 silver jewellery by SIVAAH.",
-
-              brand: {
-                "@type": "Brand",
-                name: "SIVAAH",
-              },
-
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: 4.8,
-                reviewCount: reviews.length || 1,
-              },
-
-              offers: {
-                "@type": "Offer",
-
-                priceCurrency: "INR",
-
-                price: product.price,
-
-                availability:
-                  product.stock > 0
-                    ? "https://schema.org/InStock"
-                    : "https://schema.org/OutOfStock",
-
-                priceValidUntil: "2026-12-31",
-
-                url: canonical,
-              },
-            }),
-          }}
-        />
+     
 
 
         <style>{`
@@ -2021,7 +1976,7 @@ export default function ProductPage({ product, silverRate }) {
   letter-spacing: 0.08em;
 }
         `}</style>
-       <script
+  <script
   type="application/ld+json"
   dangerouslySetInnerHTML={{
     __html: JSON.stringify({
@@ -2033,7 +1988,7 @@ export default function ProductPage({ product, silverRate }) {
         "Product",
 
       name:
-        product?.pname || "",
+        product?.name || "",
 
       image:
         product?.images?.map(
@@ -2046,7 +2001,7 @@ export default function ProductPage({ product, silverRate }) {
       description:
         product?.description ||
 
-        `${product?.pname} handcrafted in premium 925 sterling silver by SIVAAH.`,
+        `${product?.name} handcrafted in premium 925 sterling silver by SIVAAH.`,
 
       sku:
         product?._id || "",
