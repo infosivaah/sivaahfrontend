@@ -44,7 +44,7 @@ useEffect(() => {
 
       const res = await fetch(
 
-        "http://localhost:5000/api/products/paginated?page=1&limit=12"
+        "https://sivaahbackend.onrender.com/api/products/paginated?page=1&limit=12"
 
       );
 
@@ -200,7 +200,7 @@ useEffect(() => {
 
         const res = await fetch(
 
-          `http://localhost:5000/api/products/paginated?page=${nextPage}&limit=8`
+          `https://sivaahbackend.onrender.com/api/products/paginated?page=${nextPage}&limit=8`
 
         );
 
@@ -1299,7 +1299,7 @@ export async function getServerSideProps() {
 //     ] = await Promise.all([
 
 //       fetch(
-//         "http://localhost:5000/api/products/paginated?page=1&limit=12"
+//         "https://sivaahbackend.onrender.com/api/products/paginated?page=1&limit=12"
 //       ),
 
 //       fetch(
