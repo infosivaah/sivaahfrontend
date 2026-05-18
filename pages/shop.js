@@ -22,8 +22,8 @@ export default function ShopPage({
 
   const [mobileFilters, setMobileFilters] =
     useState(false);
- const [items, setItems] =
-  useState([]);
+  const [items, setItems] =
+    useState([]);
 
   const [page, setPage] =
     useState(1);
@@ -33,48 +33,79 @@ export default function ShopPage({
 
   const [hasMoreProducts, setHasMoreProducts] =
     useState(false);
-/* INITIAL FETCH */
+  /* INITIAL FETCH */
 
-useEffect(() => {
+  /* FETCH PRODUCTS */
 
-  const fetchProducts =
-    async () => {
+  useEffect(() => {
 
-    try {
+    const fetchProducts =
+      async () => {
 
-      const res = await fetch(
+        try {
 
-        "https://sivaahbackend.onrender.com/api/products/paginated?page=1&limit=12"
+          setLoading(true);
 
-      );
+          const params =
+            new URLSearchParams({
 
-      const data =
-        await res.json();
+              page: 1,
 
-      setItems(
-        data.products || []
-      );
+              limit: 12,
 
-      setHasMoreProducts(
-        data.hasMore
-      );
+              category:
+                category || "",
 
-    } catch (err) {
+              maxPrice:
+                maxPrice || "",
 
-      console.log(err);
+              search:
+                search || "",
 
-    } finally {
+              sort:
+                sort || ""
+            });
 
-      setLoading(false);
-    }
-  };
+          const res = await fetch(
 
-  fetchProducts();
+            `http://localhost:5000/api/products/paginated?${params}`
 
-}, []);
+          );
+
+          const data =
+            await res.json();
+
+          setItems(
+            data.products || []
+          );
+
+          setHasMoreProducts(
+            data.hasMore
+          );
+
+          setPage(1);
+
+        } catch (err) {
+
+          console.log(err);
+
+        } finally {
+
+          setLoading(false);
+        }
+      };
+
+    fetchProducts();
+
+  }, [
+    category,
+    maxPrice,
+    search,
+    sort
+  ]);
   /* LOADING */
 
- 
+
 
   //   const start = () => setLoading(true);
 
@@ -117,74 +148,7 @@ useEffect(() => {
 
   /* FILTER */
 
-  const filteredProducts = useMemo(() => {
 
-    // let list = [...products];
-    let list = [...items];
-
-    if (category) {
-
-      list = list.filter(
-        p =>
-          p.category &&
-          p.category.toLowerCase() ===
-          category.toLowerCase()
-      );
-    }
-
-    if (maxPrice) {
-
-      list = list.filter(
-        p =>
-          Number(p.price) <=
-          Number(maxPrice)
-      );
-    }
-
-    if (search) {
-
-      const q = search.toLowerCase();
-
-      list = list.filter(
-        p =>
-          p.name
-            .toLowerCase()
-            .includes(q) ||
-
-          p.category
-            ?.toLowerCase()
-            .includes(q)
-      );
-    }
-
-    if (sort === "price-asc") {
-
-      list.sort(
-        (a, b) => a.price - b.price
-      );
-    }
-
-    if (sort === "price-desc") {
-
-      list.sort(
-        (a, b) => b.price - a.price
-      );
-    }
-
-    if (sort === "latest") {
-
-      list.reverse();
-    }
-
-    return list;
-
-  }, [
-    items,
-    category,
-    maxPrice,
-    search,
-    sort
-  ]);
 
   /* LOAD MORE */
 
@@ -198,9 +162,29 @@ useEffect(() => {
         const nextPage =
           page + 1;
 
+        const params =
+          new URLSearchParams({
+
+            page: nextPage,
+
+            limit: 8,
+
+            category:
+              category || "",
+
+            maxPrice:
+              maxPrice || "",
+
+            search:
+              search || "",
+
+            sort:
+              sort || ""
+          });
+
         const res = await fetch(
 
-          `https://sivaahbackend.onrender.com/api/products/paginated?page=${nextPage}&limit=8`
+          `http://localhost:5000/api/products/paginated?${params}`
 
         );
 
@@ -1092,20 +1076,15 @@ useEffect(() => {
         <div className="chip-row">
 
           <button
-            className={`lux-chip ${!category
-              ? "active"
-              : ""
-              }`}
+            className="lux-chip active"
 
             onClick={() =>
-              updateQuery(
-                "category",
-                ""
-              )
+              router.push("/shop")
             }
           >
             All
           </button>
+
 
           {categories.map((cat, i) => (
 
@@ -1141,7 +1120,7 @@ useEffect(() => {
             Showing
             {" "}
             <strong>
-              {filteredProducts.length}
+              {items.length}
             </strong>
             {" "}
             products
@@ -1155,7 +1134,7 @@ useEffect(() => {
 
           <ProductGridSkeleton />
 
-        ) : filteredProducts.length === 0 ? (
+        ) : items.length === 0 ? (
 
           <div className="empty-wrap">
 
@@ -1190,7 +1169,7 @@ useEffect(() => {
 
           <div className="products-grid">
 
-            {filteredProducts.map(
+            {items.map(
               (product) => (
 
                 <div
@@ -1210,22 +1189,22 @@ useEffect(() => {
         )}
         {loadingMore && (
 
-  <div className="products-grid skeleton-wrap">
+          <div className="products-grid skeleton-wrap">
 
-    {Array.from({
-      length: 4
-    }).map((_, i) => (
+            {Array.from({
+              length: 4
+            }).map((_, i) => (
 
-      <div
-        key={i}
-        className="skeleton-card"
-      />
+              <div
+                key={i}
+                className="skeleton-card"
+              />
 
-    ))}
+            ))}
 
-  </div>
+          </div>
 
-)}
+        )}
         {hasMoreProducts && (
 
           <div className="load-more-wrap">
@@ -1261,7 +1240,7 @@ export async function getServerSideProps() {
 
     const categoriesRes =
       await fetch(
-        "https://sivaahbackend.onrender.com/api/categories"
+        "http://localhost:5000/api/categories"
       );
 
     const categoriesRaw =
@@ -1299,11 +1278,11 @@ export async function getServerSideProps() {
 //     ] = await Promise.all([
 
 //       fetch(
-//         "https://sivaahbackend.onrender.com/api/products/paginated?page=1&limit=12"
+//         "http://localhost:5000/api/products/paginated?page=1&limit=12"
 //       ),
 
 //       fetch(
-//         "https://sivaahbackend.onrender.com/api/categories"
+//         "http://localhost:5000/api/categories"
 //       )
 
 //     ]);
@@ -1356,11 +1335,11 @@ export async function getServerSideProps() {
 //     ] = await Promise.all([
 
 //       fetch(
-//         "https://sivaahbackend.onrender.com/api/products"
+//         "http://localhost:5000/api/products"
 //       ),
 
 //       fetch(
-//         "https://sivaahbackend.onrender.com/api/categories"
+//         "http://localhost:5000/api/categories"
 //       )
 
 //     ]);

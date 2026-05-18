@@ -306,13 +306,7 @@ body {
   letter-spacing: 0.6px;
 }
 
-.product-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111;
-  margin: 0px 0 6px;
-  line-height: 1.3;
-}
+
 
 /* PRICE */
 
@@ -322,11 +316,7 @@ body {
   gap: 8px;
 }
 
-.price {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111;
-}
+
 
 .mrp {
   font-size: 13px;

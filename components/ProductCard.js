@@ -477,7 +477,7 @@ export default function ProductCard({ product }) {
     serif;
 
   font-size: 22px;
-
+font-weight: 550 !important;
   line-height: 1.12;
 
   color: #1d1b18;
@@ -532,7 +532,7 @@ export default function ProductCard({ product }) {
 
   font-size: 18px;
 
-  font-weight: 700;
+  font-weight: 550 !important;
 
   color: #1d1b18;
 }
@@ -771,7 +771,7 @@ export default function ProductCard({ product }) {
   }
 
   .product-title {
-
+font-weight: 100;
     font-size: 16px;
 
     line-height: 1.08;
@@ -789,6 +789,7 @@ export default function ProductCard({ product }) {
   .price {
 
     font-size: 14px;
+    font-weight: 550;
   }
 
   .mrp {
