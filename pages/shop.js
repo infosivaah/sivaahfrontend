@@ -68,7 +68,7 @@ export default function ShopPage({
 
           const res = await fetch(
 
-            `http://localhost:5000/api/products/paginated?${params}`
+            `https://sivaahbackend.onrender.com/api/products/paginated?${params}`
 
           );
 
@@ -184,7 +184,7 @@ export default function ShopPage({
 
         const res = await fetch(
 
-          `http://localhost:5000/api/products/paginated?${params}`
+          `https://sivaahbackend.onrender.com/api/products/paginated?${params}`
 
         );
 
@@ -1240,7 +1240,7 @@ export async function getServerSideProps() {
 
     const categoriesRes =
       await fetch(
-        "http://localhost:5000/api/categories"
+        "https://sivaahbackend.onrender.com/api/categories"
       );
 
     const categoriesRaw =
@@ -1278,11 +1278,11 @@ export async function getServerSideProps() {
 //     ] = await Promise.all([
 
 //       fetch(
-//         "http://localhost:5000/api/products/paginated?page=1&limit=12"
+//         "https://sivaahbackend.onrender.com/api/products/paginated?page=1&limit=12"
 //       ),
 
 //       fetch(
-//         "http://localhost:5000/api/categories"
+//         "https://sivaahbackend.onrender.com/api/categories"
 //       )
 
 //     ]);
@@ -1335,11 +1335,11 @@ export async function getServerSideProps() {
 //     ] = await Promise.all([
 
 //       fetch(
-//         "http://localhost:5000/api/products"
+//         "https://sivaahbackend.onrender.com/api/products"
 //       ),
 
 //       fetch(
-//         "http://localhost:5000/api/categories"
+//         "https://sivaahbackend.onrender.com/api/categories"
 //       )
 
 //     ]);
