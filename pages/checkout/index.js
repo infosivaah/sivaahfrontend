@@ -84,6 +84,11 @@ export default function Checkout() {
       setAppliedCoupon(code);
       return;
     }
+    if (code === "SV10") {
+      setCouponDiscount(Math.round(totalAmount * 0.10));
+      setAppliedCoupon(code);
+      return;
+    }
     if (code === "AYODHYA") {
       setCouponDiscount(Math.round(totalAmount * 0.15));
       setAppliedCoupon(code);
