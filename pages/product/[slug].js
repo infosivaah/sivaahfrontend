@@ -36,66 +36,61 @@ export default function ProductPage({ product, silverRate }) {
    TRANSPARENT PRICING CALC
 ───────────────────────────── */
 
-  const silverValue =
-    Math.round(
-      product.grams *
-      silverRate
-    );
+  /* ─────────────────────────────
+   TRANSPARENT PRICING CALC
+───────────────────────────── */
 
-  const overallMaking =
-    Math.round(
-      product.grams *
-      product.labourPerGram
-    );
+const silverValue =
+  Math.round(
+    product.grams *
+    silverRate
+  );
 
-  /* GST */
+/* VALUE AFTER SILVER */
 
-  const silverGST =
-    Math.round(
-      silverValue * 0.03
-    );
+const valueAfterSilver =
+  product.price -
+  silverValue;
 
-  const makingGST =
-    Math.round(
-      overallMaking * 0.05
-    );
+/* GST */
 
-  const govtTax =
-    silverGST +
-    makingGST;
+const silverGST =
+  Math.round(
+    silverValue * 0.03
+  );
 
-  /* REMAINING */
+const makingGST =
+  Math.round(
+    valueAfterSilver * 0.05
+  );
 
-  const remainingMaking =
-    overallMaking -
-    govtTax;
+const govtTax =
+  silverGST +
+  makingGST;
 
-  /* CRAFTSMANSHIP */
+/* REMAINING VALUE */
 
-  const craftsmanshipValue =
-    Math.round(
-      remainingMaking * 0.5
-    );
+const remainingValue =
+  product.price -
+  silverValue -
+  govtTax;
 
-  /* PLATING */
+/* DISTRIBUTION */
 
-  const remainingAfterCraft =
-    remainingMaking -
-    craftsmanshipValue;
+const craftsmanshipValue =
+  Math.round(
+    remainingValue * 0.50
+  );
 
-  /* PLATING */
+const platingValue =
+  Math.round(
+    remainingValue * 0.20
+  );
 
-  const platingValue =
-    Math.round(
-      remainingAfterCraft * 0.40
-    );
-
-  /* EXPERIENCE */
-
-  const brandValue =
-    remainingMaking -
-    craftsmanshipValue -
-    platingValue;
+const brandValue =
+  remainingValue -
+  craftsmanshipValue -
+  platingValue;
 
   const faqData = [
 
