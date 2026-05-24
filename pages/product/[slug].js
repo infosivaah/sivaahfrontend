@@ -2822,7 +2822,7 @@ export async function getStaticProps({ params }) {
           rateData.rate || 0
       },
 
-      revalidate: 3600
+      revalidate: 10
     };
 
   } catch {
