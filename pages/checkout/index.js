@@ -74,8 +74,8 @@ export default function Checkout() {
     const code = coupon.trim().toUpperCase();
     setCouponDiscount(0);
     setAppliedCoupon("");
-    if (code === "SIVAAH10") {
-      setCouponDiscount(Math.round(totalAmount * 0.10));
+    if (code === "SIVAAH20") {
+      setCouponDiscount(Math.round(totalAmount * 0.20));
       setAppliedCoupon(code);
       return;
     }

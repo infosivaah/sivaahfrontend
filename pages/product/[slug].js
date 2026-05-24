@@ -2189,10 +2189,10 @@ const brandValue =
               <div className="pdp-coupon-strip">
 
                 <span>
-                  SIVAAH10
+                  SIVAAH20
                 </span>
 
-                Enjoy 10% welcome savings at checkout
+                Enjoy 20% Instant Discount at checkout
 
               </div>
               {/* Stock */}
@@ -2555,10 +2555,10 @@ const brandValue =
                       Use code
 
                       <span>
-                        SIVAAH10
+                        SIVAAH20
                       </span>
 
-                      for extra savings at checkout
+                      for 20% discount at checkout
 
                     </div>
                   </div>
