@@ -88,6 +88,10 @@ export default function Checkout() {
       setCouponDiscount(Math.round(totalAmount * 0.10));
       setAppliedCoupon(code);
       return;
+    }if (code === "Nish10") {
+      setCouponDiscount(Math.round(totalAmount * 0.10));
+      setAppliedCoupon(code);
+      return;
     }
     if (code === "AYODHYA") {
       setCouponDiscount(Math.round(totalAmount * 0.15));
