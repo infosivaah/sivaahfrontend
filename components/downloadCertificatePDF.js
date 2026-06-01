@@ -164,20 +164,20 @@ pdf.addImage(
 
  /* PRODUCT NAME */
 
-let fontSize = 10;
+let fontSize = 9;
 
 if (
   certificate.productName.length > 45
 ) {
 
-  fontSize = 7.5;
+  fontSize = 7.1;
 }
 
 if (
   certificate.productName.length > 70
 ) {
 
-  fontSize = 6.5;
+  fontSize = 6.1;
 }
 
 pdf.setFontSize(
