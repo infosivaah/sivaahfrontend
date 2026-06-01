@@ -444,7 +444,11 @@ pdf.rect(
   pdf.text(
     thankYouText,
     0.22,
-    0.68
+    0.68,
+    {
+      align:
+        "center",
+    }
   );
 
   /* CTA BOX */
