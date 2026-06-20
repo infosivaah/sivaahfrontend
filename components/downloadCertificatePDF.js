@@ -163,55 +163,57 @@ pdf.addImage(
   );
 
  /* PRODUCT NAME */
+/* PRODUCT NAME */
 
 let fontSize = 9;
+let productName;
 
-if (
-  certificate.productName.length > 45
-) {
+while (fontSize > 5) {
 
-  fontSize = 7.1;
-}
+  pdf.setFontSize(fontSize);
 
-if (
-  certificate.productName.length > 70
-) {
-
-  fontSize = 6.1;
-}
-
-pdf.setFontSize(
-  fontSize
-);
-
-const productName =
-  pdf.splitTextToSize(
-
+  productName = pdf.splitTextToSize(
     certificate.productName,
-
     1.40
   );
 
-/* LIMIT TO 3 LINES */
+  // Stop when name fits in 2 lines
+  if (productName.length <= 2) {
+    break;
+  }
 
-const limitedName =
-  productName.slice(
-    0,
-    3
-  );
+  fontSize -= 0.5;
+}
+
+pdf.setFont(
+  "times",
+  "bold"
+);
+
+pdf.setFontSize(fontSize);
 
 pdf.text(
-  limitedName,
+  productName,
   1,
   1.52,
   {
-    align:
-      "center",
-    }
+    align: "center",
+  }
 );
 
-  /* VERIFIED */
+// Dynamic spacing based on number of lines
+const lineCount = productName.length;
 
+const verifiedY =
+  1.52 +
+  (lineCount * 0.12) +
+  0.08;
+const detailsY = verifiedY + 0.20;
+const batchY = verifiedY + 0.34;
+
+const qrBoxY = batchY + 0.12;
+const qrImageY = qrBoxY + 0.07;
+/* VERIFIED */
 pdf.setTextColor(
   180,
   140,
@@ -228,11 +230,10 @@ pdf.setFontSize(5);
 pdf.text(
   "AUTHENTIC 925 STERLING SILVER",
   1,
-  1.80,
+  verifiedY,
   {
-    align:
-      "center",
-    }
+    align: "center",
+  }
 );
   /* DETAILS */
 pdf.setTextColor(
@@ -253,7 +254,7 @@ pdf.setFontSize(5);
 pdf.text(
   `${certificate.purity} • ${certificate.weight}g`,
   1,
-  2.02,
+  detailsY,
   {
     align:
       "center",
@@ -263,7 +264,7 @@ pdf.text(
 pdf.text(
   `Batch ${certificate.batchid}`,
   1,
-  2.16,
+  batchY,
   {
     align:
       "center",
@@ -283,8 +284,8 @@ pdf.setFillColor(
 );
 
 pdf.roundedRect(
-  0.58,
-  2.21,
+ 0.58,
+qrBoxY,
   0.84,
   1.16,
   0.05,
@@ -295,8 +296,8 @@ pdf.roundedRect(
   pdf.addImage(
     verifyQR,
     "PNG",
-   0.64,
-2.28,
+ 0.64,
+qrImageY,
 0.72,
 0.72
   );

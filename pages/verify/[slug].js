@@ -8,6 +8,7 @@ import {
 } from "next/router";
 import downloadCertificatePDF
     from "../../components/downloadCertificatePDF";
+
 export default function VerifyPage() {
 
     const router =
@@ -473,6 +474,9 @@ export default function VerifyPage() {
                         Download Certificate PDF
 
                     </button>
+               
+
+
                 </div>
 
             </div>
