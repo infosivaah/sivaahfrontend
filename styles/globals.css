@@ -3,7 +3,48 @@ body {
   height: 100%;
   margin: 0;
 }
+/* =========================================
+   SIVAAH GLOBAL NAVIGATION LOADER
+   ========================================= */
 
+.sivaah-navigation-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  z-index: 99999;
+  background: #cabd08;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    width 0.25s ease,
+    opacity 0.15s ease;
+}
+
+.sivaah-navigation-loader-active {
+  width: 75%;
+  opacity: 1;
+  animation: sivaahLoaderProgress 1.5s ease-in-out infinite;
+}
+
+@keyframes sivaahLoaderProgress {
+  0% {
+    width: 10%;
+  }
+
+  50% {
+    width: 70%;
+  }
+
+  80% {
+    width: 85%;
+  }
+
+  100% {
+    width: 95%;
+  }
+}
 #__next {
   height: 100%;
 }

@@ -69,6 +69,7 @@ export default function Header() {
             href="/"
             className="sivaah-logo-link"
             aria-label="SIVAAH Home"
+             reloadDocument
           >
             <Image
               src="/logo.png"
@@ -89,27 +90,27 @@ export default function Header() {
               Shop
             </Link>
 
-            <Link href="/collections/rings">
+            <Link href="/collections/rings"  reloadDocument>
               Rings
             </Link>
 
-            <Link href="/collections/earrings">
+            <Link href="/collections/earrings"  reloadDocument>
               Earrings
             </Link>
 
-            <Link href="/collections/pendants">
+            <Link href="/collections/pendants"  reloadDocument>
               Pendants
             </Link>
 
-            <Link href="/collections/bracelets">
+            <Link href="/collections/bracelets"  reloadDocument>
               Bracelets
             </Link>
 
-            <Link href="/collections/anklets">
+            <Link href="/collections/anklets"  reloadDocument>
               Anklets
             </Link>
 
-            <Link href="/gifts">
+            <Link href="/gifts"  reloadDocument>
               Gifts
             </Link>
 
