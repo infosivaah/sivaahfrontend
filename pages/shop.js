@@ -1677,7 +1677,7 @@ const categoryCollections =
 
   <details>
     <summary>
-      Where can I see the details of Sivaah jewellery?
+      Where can I see details of Sivaah jewellery?
     </summary>
 
     <p>
