@@ -373,7 +373,7 @@ export default function Header() {
               </Link>
 
               <Link
-                href="/gifts"
+                href="/shop"
                 onClick={() =>
                   setMenuOpen(false)
                 }
