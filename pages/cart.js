@@ -1,6 +1,6 @@
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
-
+import Head from "next/head";
 export default function Cart() {
 
   const {
