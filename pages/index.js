@@ -286,7 +286,7 @@ export default function Home({
           justify-content: center;
           min-height: 54px;
           padding: 0 30px;
-          background: var(--sivaah-text);
+          background: var(--sivaah-gold);
           color: #fff;
           font-size: 11px;
           font-weight: 500;
@@ -296,7 +296,7 @@ export default function Home({
         }
 
         .sivaah-primary-btn:hover {
-          background: var(--sivaah-gold);
+          background: var(sivaah-primary-btn);
           color: #fff;
           transform: translateY(-2px);
         }
@@ -925,7 +925,7 @@ export default function Home({
           }
 
           .sivaah-hero h1 {
-            font-size: clamp(58px, 17vw, 86px);
+            font-size: clamp(58px, 15vw, 86px);
           }
 
           .sivaah-hero-copy {
@@ -1225,9 +1225,9 @@ export default function Home({
           </div>
 
           <h1>
-            Jewellery
+            Crafted
             <br />
-            with <em>meaning.</em>
+            With <em>Intention.</em>
           </h1>
 
           <p className="sivaah-hero-copy">

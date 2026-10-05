@@ -515,6 +515,7 @@ body {
     height: 360px;
   }
 }
+
 /* SHOP BY BUDGET CARD */
 /* budget card size tweak */
 .budget-variant {
@@ -532,7 +533,7 @@ body {
 
 .sivaah-announcement {
   height: 32px;
-  background: #111;
+  background: #B88B4A;
   color: #fff;
 
   display: flex;
