@@ -40,57 +40,57 @@ export default function ProductPage({ product, silverRate }) {
    TRANSPARENT PRICING CALC
 ───────────────────────────── */
 
-const silverValue =
-  Math.round(
-    product.grams *
-    silverRate
-  );
+  const silverValue =
+    Math.round(
+      product.grams *
+      silverRate
+    );
 
-/* VALUE AFTER SILVER */
+  /* VALUE AFTER SILVER */
 
-const valueAfterSilver =
-  product.price -
-  silverValue;
+  const valueAfterSilver =
+    product.price -
+    silverValue;
 
-/* GST */
+  /* GST */
 
-const silverGST =
-  Math.round(
-    silverValue * 0.03
-  );
+  const silverGST =
+    Math.round(
+      silverValue * 0.03
+    );
 
-const makingGST =
-  Math.round(
-    valueAfterSilver * 0.05
-  );
+  const makingGST =
+    Math.round(
+      valueAfterSilver * 0.05
+    );
 
-const govtTax =
-  silverGST +
-  makingGST;
+  const govtTax =
+    silverGST +
+    makingGST;
 
-/* REMAINING VALUE */
+  /* REMAINING VALUE */
 
-const remainingValue =
-  product.price -
-  silverValue -
-  govtTax;
+  const remainingValue =
+    product.price -
+    silverValue -
+    govtTax;
 
-/* DISTRIBUTION */
+  /* DISTRIBUTION */
 
-const craftsmanshipValue =
-  Math.round(
-    remainingValue * 0.50
-  );
+  const craftsmanshipValue =
+    Math.round(
+      remainingValue * 0.50
+    );
 
-const platingValue =
-  Math.round(
-    remainingValue * 0.20
-  );
+  const platingValue =
+    Math.round(
+      remainingValue * 0.20
+    );
 
-const brandValue =
-  remainingValue -
-  craftsmanshipValue -
-  platingValue;
+  const brandValue =
+    remainingValue -
+    craftsmanshipValue -
+    platingValue;
 
   const faqData = [
 
@@ -445,7 +445,7 @@ const brandValue =
             })
           }}
         />
-     
+
 
 
         <style>{`
@@ -1971,135 +1971,135 @@ const brandValue =
   letter-spacing: 0.08em;
 }
         `}</style>
-  <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
 
-      "@context":
-        "https://schema.org",
+              "@context":
+                "https://schema.org",
 
-      "@type":
-        "Product",
+              "@type":
+                "Product",
 
-      name:
-        product?.name || "",
+              name:
+                product?.name || "",
 
-      image:
-        product?.images?.map(
-          img =>
-            img.startsWith("http")
-              ? img
-              : `https://www.sivaah.in${img}`
-        ) || [],
+              image:
+                product?.images?.map(
+                  img =>
+                    img.startsWith("http")
+                      ? img
+                      : `https://www.sivaah.in${img}`
+                ) || [],
 
-      description:
-        product?.description ||
+              description:
+                product?.description ||
 
-        `${product?.name} handcrafted in premium 925 sterling silver by SIVAAH.`,
+                `${product?.name} handcrafted in premium 925 sterling silver by SIVAAH.`,
 
-      sku:
-        product?._id || "",
+              sku:
+                product?._id || "",
 
-      mpn:
-        product?._id || "",
+              mpn:
+                product?._id || "",
 
-      brand: {
+              brand: {
 
-        "@type":
-          "Brand",
+                "@type":
+                  "Brand",
 
-        name:
-          "SIVAAH"
-      },
+                name:
+                  "SIVAAH"
+              },
 
-      category:
-        product?.category || "",
+              category:
+                product?.category || "",
 
-   offers: {
+              offers: {
 
-  "@type":
-    "Offer",
+                "@type":
+                  "Offer",
 
-  url:
-    `https://www.sivaah.in/product/${product?.slug}`,
+                url:
+                  `https://www.sivaah.in/product/${product?.slug}`,
 
-  priceCurrency:
-    "INR",
+                priceCurrency:
+                  "INR",
 
-  price:
-    Number(product?.price || 0),
+                price:
+                  Number(product?.price || 0),
 
-  availability:
-    product?.quantity > 0
+                availability:
+                  product?.quantity > 0
 
-      ? "https://schema.org/InStock"
+                    ? "https://schema.org/InStock"
 
-      : "https://schema.org/OutOfStock",
+                    : "https://schema.org/OutOfStock",
 
-  itemCondition:
-    "https://schema.org/NewCondition",
+                itemCondition:
+                  "https://schema.org/NewCondition",
 
-  seller: {
+                seller: {
 
-    "@type":
-      "Organization",
+                  "@type":
+                    "Organization",
 
-    name:
-      "SIVAAH"
-  },
+                  name:
+                    "SIVAAH"
+                },
 
-  shippingDetails: {
+                shippingDetails: {
 
-    "@type":
-      "OfferShippingDetails",
+                  "@type":
+                    "OfferShippingDetails",
 
-    shippingRate: {
+                  shippingRate: {
 
-      "@type":
-        "MonetaryAmount",
+                    "@type":
+                      "MonetaryAmount",
 
-      value: "0",
+                    value: "0",
 
-      currency: "INR"
-    },
+                    currency: "INR"
+                  },
 
-    shippingDestination: {
+                  shippingDestination: {
 
-      "@type":
-        "DefinedRegion",
+                    "@type":
+                      "DefinedRegion",
 
-      addressCountry:
-        "IN"
-    }
+                    addressCountry:
+                      "IN"
+                  }
 
-  },
+                },
 
-  hasMerchantReturnPolicy: {
+                hasMerchantReturnPolicy: {
 
-    "@type":
-      "MerchantReturnPolicy",
+                  "@type":
+                    "MerchantReturnPolicy",
 
-    applicableCountry:
-      "IN",
+                  applicableCountry:
+                    "IN",
 
-    returnPolicyCategory:
-      "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  returnPolicyCategory:
+                    "https://schema.org/MerchantReturnFiniteReturnWindow",
 
-    merchantReturnDays:
-      7,
+                  merchantReturnDays:
+                    7,
 
-    returnMethod:
-      "https://schema.org/ReturnByMail",
+                  returnMethod:
+                    "https://schema.org/ReturnByMail",
 
-    returnFees:
-      "https://schema.org/FreeReturn"
-  }
-}
+                  returnFees:
+                    "https://schema.org/FreeReturn"
+                }
+              }
 
-    })
-  }}
-/>
+            })
+          }}
+        />
       </Head>
 
       <div className="pdp-wrap">
@@ -2351,13 +2351,18 @@ const brandValue =
               <p className="pdp-desc">{product.description}</p>
               <div className="seo-copy">
 
-                Crafted in genuine 925 sterling silver,
-                this {product.name} blends timeless
-                elegance with modern minimalism.
-                Designed for everyday luxury, gifting
-                and special occasions, every SIVAAH
-                piece is BIS hallmarked and crafted
-                for long-lasting shine and comfort.
+                <p>
+                  The {product.name} is made in 925 sterling silver
+                  and designed for everyday wear, gifting and
+                  special occasions.
+                </p>
+
+                <p>
+                  SIVAAH shows the product weight, the silver rate
+                  used for pricing and the price breakdown so you
+                  can understand what you are paying for before
+                  placing your order.
+                </p>
 
               </div>
               {/* TRANSPARENT PRICING */}

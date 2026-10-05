@@ -68,10 +68,10 @@ export default function AboutPage() {
               <p className="mb-2">
                 📧{" "}
                 <a
-                  href="mailto:sivaahofficials@gmail.com"
+                  href="mailto:infosivaah@gmail.com"
                   className="text-decoration-none"
                 >
-                  sivaahofficials@gmail.com
+                  infosivaah@gmail.com
                 </a>
               </p>
 

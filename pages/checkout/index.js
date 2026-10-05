@@ -79,8 +79,8 @@ export default function Checkout() {
       setAppliedCoupon(code);
       return;
     }
-    if (code === "TEST") {
-      setCouponDiscount(Math.round(totalAmount * 0.90));
+    if (code === "TESTSIV") {
+      setCouponDiscount(Math.round(totalAmount * 0.99));
       setAppliedCoupon(code);
       return;
     }
@@ -215,6 +215,18 @@ export default function Checkout() {
   /* ── UI ── */
   return (
     <>
+    <Head>
+
+  <title>
+    Secure Checkout | SIVAAH
+  </title>
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  />
+
+</Head>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
       <style>{`

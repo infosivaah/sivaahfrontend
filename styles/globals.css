@@ -485,3 +485,392 @@ body {
     height: 160px;
   }
 }
+/* =========================================================
+   SIVAAH HEADER
+   ========================================================= */
+
+.sivaah-announcement {
+  height: 32px;
+  background: #111;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+}
+
+.announcement-dot {
+  opacity: 0.45;
+}
+
+
+.sivaah-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid #ededed;
+}
+
+
+.sivaah-header-inner {
+  height: 76px;
+  max-width: 1480px;
+
+  margin: 0 auto;
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 28px;
+}
+
+
+.sivaah-logo-link {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+
+.sivaah-logo {
+  width: 116px;
+  height: auto;
+  display: block;
+}
+
+
+.sivaah-main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 26px;
+
+  flex: 1;
+}
+
+
+.sivaah-main-nav a {
+  position: relative;
+
+  color: #161616;
+  text-decoration: none;
+
+  font-size: 12px;
+  letter-spacing: 0.04em;
+
+  white-space: nowrap;
+
+  transition: opacity 0.2s ease;
+}
+
+.sivaah-main-nav a:hover {
+  opacity: 0.55;
+}
+
+
+.sivaah-header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.header-icon-button,
+.header-cart-button {
+  position: relative;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  background: transparent;
+
+  color: #111;
+
+  cursor: pointer;
+
+  text-decoration: none;
+}
+
+
+.header-icon-button svg,
+.header-cart-button svg {
+  width: 21px;
+  height: 21px;
+}
+
+
+.cart-count {
+  position: absolute;
+
+  top: 3px;
+  right: 2px;
+
+  min-width: 16px;
+  height: 16px;
+
+  padding: 0 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+  color: #fff;
+
+  border-radius: 50%;
+
+  font-size: 9px;
+  line-height: 1;
+}
+
+
+.mobile-menu-button {
+  display: none;
+}
+
+
+/* SEARCH */
+
+.header-search-panel {
+  border-top: 1px solid #eee;
+  background: #fff;
+
+  padding: 18px 32px;
+}
+
+
+.header-search-form {
+  max-width: 900px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #111;
+
+  height: 48px;
+}
+
+
+.header-search-form svg {
+  width: 20px;
+  height: 20px;
+
+  flex-shrink: 0;
+}
+
+
+.header-search-form input {
+  flex: 1;
+
+  height: 100%;
+
+  border: 0;
+  outline: 0;
+
+  padding: 0 14px;
+
+  font-size: 15px;
+}
+
+
+.header-search-form button {
+  border: 0;
+  background: transparent;
+
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+
+  cursor: pointer;
+}
+
+
+/* MOBILE DRAWER */
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 2000;
+
+  background: rgba(0,0,0,0.35);
+}
+
+
+.mobile-menu {
+  width: min(88vw, 380px);
+  height: 100%;
+
+  background: #fff;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  animation: sivaahMenuIn 0.25s ease;
+}
+
+
+@keyframes sivaahMenuIn {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding-bottom: 25px;
+
+  border-bottom: 1px solid #eee;
+}
+
+
+.mobile-menu-header span {
+  font-size: 15px;
+  letter-spacing: 0.16em;
+}
+
+
+.mobile-menu-header button {
+  border: 0;
+  background: transparent;
+
+  font-size: 30px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+
+  padding-top: 20px;
+}
+
+
+.mobile-menu-nav a {
+  padding: 17px 0;
+
+  border-bottom: 1px solid #eee;
+
+  color: #111;
+  text-decoration: none;
+
+  font-size: 15px;
+}
+
+
+.mobile-menu-footer {
+  margin-top: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+}
+
+
+.mobile-menu-footer a {
+  color: #666;
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+
+@media (max-width: 1050px) {
+
+  .sivaah-main-nav {
+    gap: 16px;
+  }
+
+  .sivaah-main-nav a {
+    font-size: 11px;
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .sivaah-header-inner {
+    height: 64px;
+    padding: 0 16px;
+
+    justify-content: space-between;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+  }
+
+  .sivaah-main-nav {
+    display: none;
+  }
+
+  .desktop-account {
+    display: none;
+  }
+
+  .sivaah-logo {
+    width: 105px;
+  }
+
+  .sivaah-announcement {
+    height: 29px;
+
+    font-size: 8px;
+    letter-spacing: 0.12em;
+
+    gap: 6px;
+
+    white-space: nowrap;
+  }
+
+}
+
+
+@media (max-width: 430px) {
+
+  .sivaah-announcement span:nth-of-type(3),
+  .announcement-dot:nth-of-type(2) {
+    display: none;
+  }
+
+  .sivaah-header-actions {
+    gap: 0;
+  }
+
+}

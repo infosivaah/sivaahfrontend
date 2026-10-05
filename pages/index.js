@@ -9,31 +9,23 @@ export default function Home({
   categories,
   carousel
 }) {
-const router = useRouter();
-useEffect(() => {
+  const router = useRouter();
+  useEffect(() => {
 
-  router.prefetch("/shop");
+    router.prefetch("/shop");
 
-}, []);
+  }, []);
   return (
     <>
       <Head>
-        <title>
-          SIVAAH® | Premium 925 Silver Jewellery
-        </title>
-        <meta name="theme-color" content="#faf7f2" />
-        <meta
-          name="description"
-          content="Luxury 925 silver jewellery crafted with meaning."
-        />
         <meta
           property="og:title"
-          content="SIVAAH® | Premium 925 Silver Jewellery"
+          content="SIVAAH® | 925 Silver Jewellery & Meaningful Gifts"
         />
 
         <meta
           property="og:description"
-          content="Luxury 925 silver jewellery crafted with meaning. Transparent pricing, real silver weight, timeless spiritual elegance."
+          content="Shop Sivaah 925 silver jewellery for everyday wear and meaningful gifting. Explore rings, earrings, pendants, bracelets and more with real product weights and transparent pricing."
         />
 
         <meta
@@ -63,12 +55,12 @@ useEffect(() => {
 
         <meta
           name="twitter:title"
-          content="SIVAAH® | Premium 925 Silver Jewellery"
+          content="SIVAAH® | 925 Silver Jewellery & Meaningful Gifts"
         />
 
         <meta
           name="twitter:description"
-          content="Luxury 925 silver jewellery crafted with meaning and transparency."
+          content="Shop Sivaah 925 silver jewellery for everyday wear and meaningful gifting, with real product weights and transparent pricing."
         />
 
         <meta
@@ -596,12 +588,18 @@ a {
 }
 
 /* COLLECTIONS */
-
 .collection-scroll {
   display: flex;
   overflow-x: auto;
-  gap: 24px;
-  padding-bottom: 12px;
+  gap: 16px;
+  padding: 8px 2px 18px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.collection-scroll > a {
+  scroll-snap-align: start;
+  flex-shrink: 0;
 }
 
 .collection-scroll::-webkit-scrollbar {
@@ -609,21 +607,13 @@ a {
 }
 
 .collection-card {
-
-  min-width: 340px;
-
-  height: 520px;
-
-  border-radius: 34px;
-
+  min-width: 220px;
+  height: 300px;
+  border-radius: 24px;
   overflow: hidden;
-
   position: relative;
-
   flex-shrink: 0;
-
-  box-shadow:
-    0 16px 42px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.07);
 }
 
 .collection-card img {
@@ -885,13 +875,13 @@ a {
   }
 
   .collection-card {
-    min-width: 260px;
-    height: 390px;
-    border-radius: 22px;
-  }
+  min-width: 175px;
+  height: 235px;
+  border-radius: 20px;
+}
 
   .collection-title {
-    font-size: 38px;
+    font-size: 30px;
   }
 
   .section-space {
@@ -1072,7 +1062,7 @@ h6 {
         <div className="hero-content">
 
           <div className="hero-sub">
-            925 Silver | Real Weight | Fair Price.
+            925 SILVER | REAL WEIGHT | TRANSPARENT PRICING
           </div>
 
           <h1 className="lux-title">
@@ -1081,15 +1071,16 @@ h6 {
             Worn With Intention.
           </h1>
 
-          <h2 className="hero-text">
-            India's first fully transparent silver brand. Weight, price breakup, silver rate — all visible. Always.
-          </h2>
+          <p className="hero-text">
+            A transparent silver jewellery brand. Weight, price breakup,
+            silver rate — all visible. Always.
+          </p>
 
           <div className="hero-btns">
 
             <Link
               href="/shop"
-              prefetch={true}
+              reloadDocument
               className="btn-main"
             >
               Shop Now
@@ -1097,7 +1088,7 @@ h6 {
 
             <Link
               href="/shop"
-              prefetch={true}
+              reloadDocument
               className="btn-outline"
             >
               Explore Collection
@@ -1138,12 +1129,25 @@ h6 {
           <div className="text-center mb-5">
 
             <div className="eyebrow">
-              Curated Collections
+              SHOP 925 SILVER JEWELLERY
             </div>
 
             <h2 className="section-title">
-              Explore Categories
+              Shop By Jewellery Type
             </h2>
+
+            <p
+              className="lux-text"
+              style={{
+                maxWidth: "650px",
+                margin: "0 auto"
+              }}
+            >
+              Explore Sivaah 925 silver rings, earrings, pendants, bracelets,
+              anklets and more.
+            </p>
+
+
 
           </div>
 
@@ -1153,16 +1157,15 @@ h6 {
 
               <Link
                 key={cat._id}
-                href={`/shop?category=${encodeURIComponent(
-                  cat.name
-                )}`}
+                href={`/shop?category=${encodeURIComponent(cat.name)}`}
+                aria-label={`Shop ${cat.name} in 925 silver jewellery`}
               >
 
                 <div className="collection-card">
 
                   <img
                     src={cat.image}
-                    alt={cat.name}
+                    alt={`${cat.name} 925 silver jewellery by Sivaah`}
                   />
 
                   <div className="collection-overlay">
@@ -1197,12 +1200,23 @@ h6 {
           <div className="text-center mb-5">
 
             <div className="eyebrow">
-              Most Loved Pieces
+              MOST LOVED PIECES
             </div>
 
             <h2 className="section-title">
-              Bestsellers
+              Bestselling 925 Silver Jewellery
             </h2>
+
+            <p
+              className="lux-text"
+              style={{
+                maxWidth: "650px",
+                margin: "0 auto"
+              }}
+            >
+              Discover Sivaah's bestselling silver jewellery, from everyday
+              rings and earrings to meaningful pendants and bracelets.
+            </p>
 
           </div>
 
@@ -1222,29 +1236,29 @@ h6 {
               </div>
 
             ))}
-          
+
 
           </div>
-         
+
 
         </div>
-<div className="home-shop-cta">
+        <div className="home-shop-cta">
 
-  <Link
-    href="/shop"
-    prefetch={true}
-    className="view-all-btn"
-  >
+          <Link
+            href="/shop"
+            prefetch={true}
+            className="view-all-btn"
+          >
 
-    Explore Full Collection
+            Explore Full Collection
 
-    <span>
-      →
-    </span>
+            <span>
+              →
+            </span>
 
-  </Link>
+          </Link>
 
-</div>
+        </div>
       </section>
       {/* TRUST SECTION */}
 

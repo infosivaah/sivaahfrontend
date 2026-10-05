@@ -35,12 +35,12 @@ export default function CategoryPage({
       <Head>
 
         <title>
-          {categoryName} | SIVAAH
+          {categoryName} Jewellery | 925 Silver | SIVAAH,
         </title>
 
         <meta
           name="description"
-          content={`Shop handcrafted 925 silver ${categoryName.toLowerCase()} by SIVAAH.`}
+          content={ `Shop 925 sterling silver ${categoryName.toLowerCase()} jewellery from SIVAAH. Explore designs, product weights and transparent pricing.`}
         />
 
         <link
@@ -364,7 +364,56 @@ export default function CategoryPage({
             font-size: 22px;
           }
         }
+.category-intro {
+  max-width: 900px;
+  margin: 20px auto 50px;
+  padding: 0 20px;
+  text-align: center;
+}
 
+.category-intro h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.category-intro p {
+  margin: 0 auto;
+  max-width: 720px;
+  color: #666;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.category-intro-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.category-intro-links a {
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+
+  .category-intro {
+    margin: 10px auto 35px;
+  }
+
+  .category-intro h2 {
+    font-size: 23px;
+  }
+
+  .category-intro p {
+    font-size: 14px;
+  }
+
+}
       `}</style>
 
       <div className="category-page">
@@ -398,7 +447,31 @@ export default function CategoryPage({
           </div>
 
         </section>
+<section className="category-intro">
 
+  <h2>
+    Shop {categoryName} in 925 Sterling Silver
+  </h2>
+
+  <p>
+    Explore the SIVAAH {categoryName.toLowerCase()} collection.
+    Each product page shows the jewellery weight, silver rate
+    used for pricing and product price breakdown.
+  </p>
+
+  <div className="category-intro-links">
+
+    <a href="/shop">
+      Shop All Jewellery
+    </a>
+
+    <a href="/">
+      About SIVAAH
+    </a>
+
+  </div>
+
+</section>
         {/* CATEGORY PRODUCTS */}
 
         <section className="products-section">

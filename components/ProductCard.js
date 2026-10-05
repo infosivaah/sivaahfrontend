@@ -3,78 +3,57 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCart } from "../context/CartContext";
 import Image from "next/image";
+
 export default function ProductCard({ product }) {
-
   const router = useRouter();
-
   const { addToCart } = useCart();
 
-  // const [activeImage, setActiveImage] =useState(0);
+  const [isAdded, setIsAdded] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
 
-  const [isAdded, setIsAdded] =
-    useState(false);
+  const images = Array.isArray(product?.images)
+    ? product.images
+    : [];
 
-  const [toastVisible, setToastVisible] =
-    useState(false);
+  /* =========================
+     IMAGE
+  ========================= */
 
-  const images = product.images || [];
-
-  /* AUTO IMAGE ROTATION */
-
-  // useEffect(() => {
-
-  //   if (images.length <= 1) return;
-
-  //   const interval = setInterval(() => {
-
-  //     setActiveImage((prev) =>
-  //       prev === images.length - 1
-  //         ? 0
-  //         : prev + 1
-  //     );
-
-  //   }, 2600);
-
-  //   return () => clearInterval(interval);
-
-  // }, [images.length]);
-
-  // const image =
-  //   images?.[activeImage]?.replace(
-  //     "/upload/",
-  //     "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
-  //   );
- const firstImage =
-  images?.[0]
+  const firstImage = images?.[0]
     ? images[0].replace(
         "/upload/",
         "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
       )
     : "/placeholder.jpg";
 
- const secondImage =
-  images?.[1]
+  const secondImage = images?.[1]
     ? images[1].replace(
         "/upload/",
         "/upload/w_700,h_850,c_fill,q_auto,f_auto/"
       )
     : null;
 
-  /* DISCOUNT */
+  /* =========================
+     PRICE
+  ========================= */
 
+  const sellingPrice = Number(product?.price || 0);
+  const mrp = Number(product?.mrp || 0);
+
+  // Actual MRP discount
   const discount =
-    product.mrp
-      ? Math.round(
-        ((product.mrp - product.price) /
-          product.mrp) *
-        100
-      )
-      : null;
+    mrp > sellingPrice
+      ? Math.round(((mrp - sellingPrice) / mrp) * 100)
+      : 0;
 
-  /* ADD TO CART */
+  // 20% coupon price
+  const couponPrice = Math.round(sellingPrice * 0.8);
+
+  /* =========================
+     ADD TO CART
+  ========================= */
 
   const handleAddToCart = (e) => {
-
     e.preventDefault();
 
     if (isAdded || toastVisible) return;
@@ -82,7 +61,6 @@ export default function ProductCard({ product }) {
     addToCart(product);
 
     setIsAdded(true);
-
     setToastVisible(true);
 
     setTimeout(() => {
@@ -94,31 +72,31 @@ export default function ProductCard({ product }) {
     }, 2200);
   };
 
-  /* BUY NOW */
+  /* =========================
+     BUY NOW
+  ========================= */
 
   const handleBuyNow = (e) => {
-
     e.preventDefault();
 
     addToCart(product);
-
     router.push("/checkout");
   };
 
   return (
     <>
-
-      {/* TOAST */}
+      {/* =========================
+          TOAST
+      ========================= */}
 
       {toastVisible && (
-
         <div className="lux-toast">
 
           <div className="toast-icon">
             ✓
           </div>
 
-          <div>
+          <div className="toast-content">
 
             <div className="toast-title">
               Added To Cart
@@ -131,141 +109,182 @@ export default function ProductCard({ product }) {
           </div>
 
         </div>
-
       )}
 
-      {/* CARD */}
+      {/* =========================
+          PRODUCT CARD
+      ========================= */}
 
       <div className="lux-card">
 
-        {/* IMAGE */}
+        {/* =========================
+            IMAGE
+        ========================= */}
 
         <Link
-        prefetch={true}
+          prefetch={true}
           href={`/product/${product.slug}`}
           className="text-decoration-none"
         >
-
           <div className="image-wrap">
 
-            {/* DISCOUNT */}
+            {/* DISCOUNT BADGE */}
 
-            {discount && (
-
+            {discount > 0 && (
               <span className="discount-badge">
                 {discount}% OFF
               </span>
-
             )}
 
-            {/* IMAGE */}
+            {/* PRIMARY IMAGE */}
+
             <Image
               src={firstImage}
-              alt={product.name}
+              alt={
+                product?.name ||
+                "Sivaah Silver Jewellery"
+              }
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
               className="product-image primary-image"
             />
 
+            {/* SECOND IMAGE */}
+
             {secondImage && (
               <Image
                 src={secondImage}
-                alt={product.name}
+                alt={
+                  product?.name ||
+                  "Sivaah Silver Jewellery"
+                }
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className="product-image secondary-image"
               />
             )}
-            {/* 
-            <img
-              src={image}
-              alt={product.name}
-              loading="lazy"
-              className="product-image"
-            /> */}
 
-            {/* OVERLAY */}
+            {/* IMAGE OVERLAY */}
 
             <div className="image-overlay"></div>
 
           </div>
-
         </Link>
 
-        {/* CONTENT */}
+        {/* =========================
+            CONTENT
+        ========================= */}
 
         <div className="card-content">
 
           {/* CATEGORY */}
 
-          <div className="meta-row">
-
-            <span className="meta-pill">
-              {product.category}
-            </span>
-
-            {product.emotion && (
-
-              <span className="meta-pill gold">
-                {product.emotion}
+          {product?.category && (
+            <div className="meta-row">
+              <span className="meta-pill">
+                {product.category}
               </span>
+            </div>
+          )}
 
-            )}
-
-          </div>
-
-          {/* TITLE */}
+          {/* PRODUCT TITLE */}
 
           <Link
             href={`/product/${product.slug}`}
             className="text-decoration-none"
           >
-
             <h3 className="product-title">
-              {product.name}
+              {product?.name}
             </h3>
-
           </Link>
 
-          {/* PRICE */}
+          {/* MATERIAL */}
 
-          <div className="price-row">
+          <div className="product-material">
 
-            <div className="price-wrap">
+            <span>
+              92.5% Pure Silver
+            </span>
 
-              <span className="price">
-                ₹{product.price}
-              </span>
+            <b>•</b>
 
-              {product.mrp && (
+            <span>
+              Premium Finish
+            </span>
 
-                <span className="mrp">
-                  ₹{product.mrp}
+          </div>
+
+          {/* =========================
+              PRICE
+          ========================= */}
+
+          <div className="price-section">
+
+            {/* PRICE ROW */}
+
+            <div className="price-main-row">
+
+              <div className="price-wrap">
+
+                <span className="price">
+                  ₹
+                  {sellingPrice.toLocaleString(
+                    "en-IN"
+                  )}
                 </span>
 
+                {mrp > sellingPrice && (
+                  <span className="mrp">
+                    ₹
+                    {mrp.toLocaleString(
+                      "en-IN"
+                    )}
+                  </span>
+                )}
+
+              </div>
+
+              {/* DISCOUNT */}
+
+              {discount > 0 && (
+                <span className="price-discount">
+                  {discount}% OFF
+                </span>
               )}
 
             </div>
 
+            {/* COUPON PRICE */}
 
+            <div className="coupon-price">
+              Get it for{" "}
+              <strong>
+                ₹
+                {couponPrice.toLocaleString(
+                  "en-IN"
+                )}
+              </strong>{" "}
+              with coupon
+            </div>
 
           </div>
 
-          {/* BUTTONS */}
+          {/* =========================
+              BUTTONS
+          ========================= */}
 
           <div className="btn-row">
 
             <button
-              className={`cart-btn ${isAdded ? "added" : ""
-                }`}
+              className={`cart-btn ${
+                isAdded ? "added" : ""
+              }`}
               onClick={handleAddToCart}
               disabled={isAdded}
             >
-
               {isAdded
                 ? "✓ Added"
                 : "Add to Cart"}
-
             </button>
 
             <button
@@ -280,591 +299,777 @@ export default function ProductCard({ product }) {
         </div>
 
       </div>
-      {/* STYLES */}
+
+      {/* =========================
+          STYLES
+      ========================= */}
 
       <style jsx>{`
 
-.lux-card {
+        /* =================================
+           CARD
+        ================================= */
 
-  position: relative;
+        .lux-card {
+          position: relative;
 
-  background: white;
+          background: white;
 
-  border-radius: 20px;
+          border-radius: 20px;
 
-  overflow: hidden;
+          overflow: hidden;
 
-  border: 1px solid #eee3d5;
+          border: 1px solid #eee3d5;
 
-  transition: 0.35s ease;
+          transition: 0.35s ease;
 
-  box-shadow:
-    0 8px 24px rgba(0,0,0,0.05);
+          box-shadow:
+            0 8px 24px rgba(0, 0, 0, 0.05);
 
-  height: 100%;
+          height: 100%;
 
-  display: flex;
+          display: flex;
 
-  flex-direction: column;
+          flex-direction: column;
 
-  width: 100%;
+          width: 100%;
 
-  min-width: 0;
-}
+          min-width: 0;
+        }
 
-.lux-card:hover {
+        .lux-card:hover {
+          transform: translateY(-4px);
 
-  transform: translateY(-4px);
+          box-shadow:
+            0 18px 38px
+            rgba(0, 0, 0, 0.09);
+        }
 
-  box-shadow:
-    0 18px 38px rgba(0,0,0,0.09);
-}
 
-/* IMAGE */
+        /* =================================
+           IMAGE
+        ================================= */
 
-.image-wrap {
+        .image-wrap {
+          position: relative;
 
-  position: relative;
+          overflow: hidden;
 
-  overflow: hidden;
+          aspect-ratio: 1 / 1.08;
 
-  aspect-ratio: 1 / 1.08;
+          background: #f8f4ee;
+        }
 
-  background: #f8f4ee;
-}
+        :global(.product-image) {
+          object-fit: cover;
 
-:global(.product-image) {
+          transition: 0.6s ease;
+        }
 
-  object-fit: cover;
+        :global(.primary-image) {
+          opacity: 1;
 
-  transition: 0.6s ease;
-}
-:global(.primary-image) {
-  opacity: 1;
-  z-index: 1;
-}
+          z-index: 1;
+        }
 
-:global(.secondary-image) {
-  opacity: 0;
-  z-index: 2;
-}
+        :global(.secondary-image) {
+          opacity: 0;
 
-/* DESKTOP HOVER ONLY */
+          z-index: 2;
+        }
 
-@media (hover: hover) {
 
-  .lux-card:hover :global(.primary-image) {
-    opacity: 0;
-  }
+        /* DESKTOP IMAGE HOVER */
 
-  .lux-card:hover :global(.secondary-image) {
-    opacity: 1;
-  }
-}
-.lux-card:hover :global(.product-image) { 
+        @media (hover: hover) {
 
-  transform: scale(1.04);
-}
+          .lux-card:hover
+          :global(.primary-image) {
+            opacity: 0;
+          }
 
-.image-overlay {
+          .lux-card:hover
+          :global(.secondary-image) {
+            opacity: 1;
+          }
 
-  position: absolute;
+        }
 
-  inset: 0;
+        .lux-card:hover
+        :global(.product-image) {
+          transform: scale(1.04);
+        }
 
-  background:
-    linear-gradient(
-      to top,
-      rgba(0,0,0,0.06),
-      transparent
-    );
-}
 
-/* DISCOUNT */
+        /* =================================
+           IMAGE OVERLAY
+        ================================= */
 
-.discount-badge {
+        .image-overlay {
+          position: absolute;
 
-  position: absolute;
+          inset: 0;
 
-  top: 10px;
+          background:
+            linear-gradient(
+              to top,
+              rgba(0, 0, 0, 0.06),
+              transparent
+            );
 
-  left: 10px;
+          z-index: 3;
 
-  z-index: 5;
+          pointer-events: none;
+        }
 
-  background:
-    linear-gradient(
-      135deg,
-      #c59a5c,
-      #b88746
-    );
 
-  color: white;
+        /* =================================
+           DISCOUNT BADGE
+        ================================= */
 
-  padding: 5px 10px;
+        .discount-badge {
+          position: absolute;
 
-  border-radius: 999px;
+          top: 10px;
 
-  font-size: 8px;
+          left: 10px;
 
-  font-weight: 700;
+          z-index: 5;
 
-  letter-spacing: 0.06em;
+          background:
+            linear-gradient(
+              135deg,
+              #c59a5c,
+              #b88746
+            );
 
-  box-shadow:
-    0 6px 16px rgba(184,135,70,0.22);
-}
+          color: white;
 
-/* CONTENT */
+          padding: 5px 10px;
 
-.card-content {
+          border-radius: 999px;
 
-  padding: 13px;
+          font-size: 8px;
 
-  display: flex;
+          font-weight: 700;
 
-  flex-direction: column;
+          letter-spacing: 0.06em;
 
-  flex: 1;
-}
+          box-shadow:
+            0 6px 16px
+            rgba(184, 135, 70, 0.22);
+        }
 
-/* META */
 
-.meta-row {
+        /* =================================
+           CONTENT
+        ================================= */
 
-  display: flex;
+        .card-content {
+          padding: 13px;
 
-  gap: 6px;
+          display: flex;
 
-  flex-wrap: wrap;
+          flex-direction: column;
 
-  margin-bottom: 10px;
-}
+          flex: 1;
+        }
 
-.meta-pill {
 
-  background: #f6f0e7;
+        /* =================================
+           CATEGORY
+        ================================= */
 
-  color: #6f6558;
+        .meta-row {
+          display: flex;
 
-  padding: 4px 8px;
+          gap: 6px;
 
-  border-radius: 999px;
+          flex-wrap: wrap;
 
-  font-size: 7px;
+          margin-bottom: 9px;
+        }
 
-  font-weight: 600;
+        .meta-pill {
+          background: #f6f0e7;
 
-  letter-spacing: 0.05em;
+          color: #6f6558;
 
-  text-transform: uppercase;
-}
+          padding: 4px 8px;
 
-.meta-pill.gold {
+          border-radius: 999px;
 
-  background:
-    rgba(184,139,74,0.12);
+          font-size: 7px;
 
-  color: #b88b4a;
-}
+          font-weight: 600;
 
-/* TITLE */
+          letter-spacing: 0.05em;
 
-.product-title {
+          text-transform: uppercase;
+        }
 
-  font-family:
-    "Cormorant Garamond",
-    serif;
 
-  font-size: 22px;
-font-weight: 550 !important;
-  line-height: 1.12;
+        /* =================================
+           TITLE
+        ================================= */
 
-  color: #1d1b18;
+        .product-title {
+          font-family:
+            "Cormorant Garamond",
+            serif;
 
-  margin-bottom: 10px;
+          font-size: 22px;
 
-  transition: 0.3s;
+          font-weight: 420 !important;
 
-  display: -webkit-box;
+          line-height: 1.12;
 
-  -webkit-line-clamp: 2;
+          color: #1d1b18;
 
-  -webkit-box-orient: vertical;
+          margin-bottom: 7px;
 
-  overflow: hidden;
+          transition: 0.3s;
 
-  min-height: 48px;
-}
+          display: -webkit-box;
 
-.lux-card:hover .product-title {
+          -webkit-line-clamp: 2;
 
-  color: #b88b4a;
-}
+          -webkit-box-orient: vertical;
 
-/* PRICE */
+          overflow: hidden;
 
-.price-row {
+          min-height: 48px;
+        }
 
-  display: flex;
+        .lux-card:hover
+        .product-title {
+          color: #b88b4a;
+        }
 
-  align-items: center;
 
-  justify-content: space-between;
+        /* =================================
+           MATERIAL
+        ================================= */
 
-  margin-bottom: 14px;
+        .product-material {
+          display: flex;
 
-  gap: 8px;
-}
+          align-items: center;
 
-.price-wrap {
+          flex-wrap: wrap;
 
-  display: flex;
+          gap: 4px;
 
-  align-items: center;
+          font-size: 9px;
 
-  gap: 6px;
+          color: #9a866d;
 
-  flex-wrap: wrap;
-}
+          font-weight: 600;
 
-.price {
+          letter-spacing: 0.035em;
 
-  font-size: 18px;
+          line-height: 1.2;
 
-  font-weight: 550 !important;
+          margin-bottom: 11px;
+        }
 
-  color: #1d1b18;
-}
+        .product-material b {
+          color: #c59a5c;
 
-.mrp {
+          font-weight: 700;
 
-  color: #a29a8d;
+          margin: 0 1px;
+        }
 
-  text-decoration: line-through;
 
-  font-size: 11px;
-}
+        /* =================================
+           PRICE
+        ================================= */
 
-.selling-fast {
+        .price-section {
+          margin-bottom: 14px;
+        }
 
-  font-size: 8px;
+        .price-main-row {
+          display: flex;
 
-  color: #b88b4a;
+          align-items: center;
 
-  font-weight: 700;
+          justify-content: space-between;
 
-  letter-spacing: 0.05em;
+          gap: 8px;
+        }
 
-  text-transform: uppercase;
+        .price-wrap {
+          display: flex;
 
-  white-space: nowrap;
-}
+          align-items: baseline;
 
-/* BUTTONS */
+          gap: 7px;
 
-.btn-row {
+          flex-wrap: wrap;
+        }
 
-  display: grid;
+        .price {
+          font-size: 19px;
 
-  grid-template-columns: 1fr 1fr;
+          font-weight: 510 !important;
 
-  gap: 8px;
+          color: #1d1b18;
 
-  margin-top: auto;
+          line-height: 1;
+        }
 
-  width: 100%;
-}
+        .mrp {
+          color: #aaa095;
 
-.cart-btn,
-.buy-btn {
+          text-decoration: line-through;
 
-  height: 40px;
+          font-size: 11px;
 
-  border-radius: 12px;
+          line-height: 1;
+        }
 
-  border: none;
+        /* DISCOUNT NEXT TO PRICE */
 
-  cursor: pointer;
+        .price-discount {
+          color: #b88b4a;
 
-  transition: 0.3s;
+          font-size: 8px;
 
-  font-weight: 700;
+          font-weight: 750;
 
-  font-size: 9px;
+          letter-spacing: 0.06em;
 
-  letter-spacing: 0.04em;
+          text-transform: uppercase;
 
-  text-transform: uppercase;
+          white-space: nowrap;
 
-  width: 100%;
-}
+          background: rgba(
+            184,
+            139,
+            74,
+            0.10
+          );
 
-.cart-btn {
+          padding: 4px 7px;
 
-  background: #f5efe6;
+          border-radius: 999px;
+        }
 
-  color: #1d1b18;
-}
+        /* COUPON */
 
-.cart-btn:hover {
+        .coupon-price {
+          margin-top: 7px;
 
-  background: #ece1d3;
-}
+          font-size: 10px;
 
-.cart-btn.added {
+          color: #806c53;
 
-  background:
-    linear-gradient(
-      135deg,
-      #b88b4a,
-      #d8b786
-    );
+          line-height: 1.3;
+        }
 
-  color: white;
-}
+        .coupon-price strong {
+          color: #b88b4a;
 
-.buy-btn {
+          font-weight: 750;
+        }
 
-  background:
-    linear-gradient(
-      135deg,
-      #d8b786,
-      #b88b4a
-    );
 
-  color: white;
+        /* =================================
+           BUTTONS
+        ================================= */
 
-  box-shadow:
-    0 8px 18px rgba(184,139,74,0.18);
-}
+        .btn-row {
+          display: grid;
 
-.buy-btn:hover {
+          grid-template-columns: 1fr 1fr;
 
-  transform: translateY(-1px);
-}
+          gap: 8px;
 
-/* TOAST */
+          margin-top: auto;
 
-.lux-toast {
+          width: 100%;
+        }
 
-  position: fixed;
+        .cart-btn,
+        .buy-btn {
+          height: 40px;
 
-  top: 16px;
+          border-radius: 12px;
 
-  right: 16px;
+          border: none;
 
-  z-index: 9999;
+          cursor: pointer;
 
-  background: white;
+          transition: 0.3s;
 
-  border-radius: 16px;
+          font-weight: 700;
 
-  padding: 12px 16px;
+          font-size: 9px;
 
-  display: flex;
+          letter-spacing: 0.04em;
 
-  align-items: center;
+          text-transform: uppercase;
 
-  gap: 10px;
+          width: 100%;
+        }
 
-  border: 1px solid #eadfce;
+        .cart-btn {
+          background: #f5efe6;
 
-  box-shadow:
-    0 16px 34px rgba(0,0,0,0.10);
+          color: #1d1b18;
+        }
 
-  animation: slideIn 0.35s ease;
-}
+        .cart-btn:hover {
+          background: #ece1d3;
+        }
 
-@keyframes slideIn {
+        .cart-btn.added {
+          background:
+            linear-gradient(
+              135deg,
+              #b88b4a,
+              #d8b786
+            );
 
-  from {
-    opacity: 0;
-    transform:
-      translateY(-20px);
-  }
+          color: white;
+        }
 
-  to {
-    opacity: 1;
-    transform:
-      translateY(0);
-  }
-}
+        .buy-btn {
+          background:
+            linear-gradient(
+              135deg,
+              #d8b786,
+              #b88b4a
+            );
 
-.toast-icon {
+          color: white;
 
-  width: 34px;
+          box-shadow:
+            0 8px 18px
+            rgba(184, 139, 74, 0.18);
+        }
 
-  height: 34px;
+        .buy-btn:hover {
+          transform: translateY(-1px);
+        }
 
-  border-radius: 50%;
 
-  background:
-    linear-gradient(
-      135deg,
-      #d8b786,
-      #b88b4a
-    );
+        /* =================================
+           TOAST
+        ================================= */
 
-  display: flex;
+        .lux-toast {
+          position: fixed;
 
-  align-items: center;
+          top: 16px;
 
-  justify-content: center;
+          right: 16px;
 
-  color: white;
+          z-index: 9999;
 
-  font-weight: 700;
+          background: white;
 
-  flex-shrink: 0;
-}
+          border-radius: 16px;
 
-.toast-title {
+          padding: 12px 16px;
 
-  font-weight: 700;
+          display: flex;
 
-  color: #1d1b18;
+          align-items: center;
 
-  margin-bottom: 1px;
+          gap: 10px;
 
-  font-size: 13px;
-}
+          border: 1px solid #eadfce;
 
-.toast-text {
+          box-shadow:
+            0 16px 34px
+            rgba(0, 0, 0, 0.10);
 
-  font-size: 11px;
+          animation:
+            slideIn 0.35s ease;
+        }
 
-  color: #7c7368;
-}
+        @keyframes slideIn {
 
-/* MOBILE */
+          from {
+            opacity: 0;
 
-@media(max-width:768px){
+            transform:
+              translateY(-20px);
+          }
 
-  .lux-card {
+          to {
+            opacity: 1;
 
-    border-radius: 16px;
-  }
+            transform:
+              translateY(0);
+          }
 
-  .image-wrap {
+        }
 
-    aspect-ratio: 1 / 1.02;
-  }
+        .toast-icon {
+          width: 34px;
 
-  .card-content {
+          height: 34px;
 
-    padding: 10px;
-  }
+          border-radius: 50%;
 
-  .meta-row {
+          background:
+            linear-gradient(
+              135deg,
+              #d8b786,
+              #b88b4a
+            );
 
-    gap: 4px;
+          display: flex;
 
-    margin-bottom: 8px;
-  }
+          align-items: center;
 
-  .meta-pill {
+          justify-content: center;
 
-    font-size: 6px;
+          color: white;
 
-    padding: 3px 6px;
-  }
+          font-weight: 700;
 
-  .product-title {
-font-weight: 100;
-    font-size: 16px;
+          flex-shrink: 0;
+        }
 
-    line-height: 1.08;
+        .toast-title {
+          font-weight: 700;
 
-    margin-bottom: 8px;
+          color: #1d1b18;
 
-    min-height: 34px;
-  }
+          margin-bottom: 1px;
 
-  .price-row {
+          font-size: 13px;
+        }
 
-    margin-bottom: 10px;
-  }
+        .toast-text {
+          font-size: 11px;
 
-  .price {
+          color: #7c7368;
+        }
 
-    font-size: 14px;
-    font-weight: 550;
-  }
 
-  .mrp {
+        /* =================================
+           MOBILE
+        ================================= */
 
-    font-size: 9px;
-  }
+        @media (max-width: 768px) {
 
-  .selling-fast {
+          .lux-card {
+            border-radius: 16px;
+          }
 
-    font-size: 7px;
-  }
+          .image-wrap {
+            aspect-ratio: 1 / 1.04;
+          }
 
-  .btn-row {
+          .card-content {
+            padding: 10px;
+          }
 
-    grid-template-columns: 1fr 1fr;
 
-    gap: 6px;
-  }
+          /* CATEGORY */
 
-  .cart-btn,
-  .buy-btn {
+          .meta-row {
+            gap: 4px;
 
-    height: 34px;
+            margin-bottom: 7px;
+          }
 
-    border-radius: 9px;
+          .meta-pill {
+            font-size: 6px;
 
-    font-size: 8px;
+            padding: 3px 6px;
+          }
 
-    letter-spacing: 0.02em;
 
-    padding: 0 4px;
-  }
+          /* TITLE */
 
-  .discount-badge {
+          .product-title {
+            font-size: 16px;
 
-    top: 8px;
+            font-weight: 420 !important;
 
-    left: 8px;
+            line-height: 1.08;
 
-    padding: 4px 8px;
+            margin-bottom: 6px;
 
-    font-size: 7px;
-  }
+            min-height: 34px;
+          }
 
-  .lux-toast {
 
-    left: 10px;
+          /* MATERIAL */
 
-    right: 10px;
+          .product-material {
+            font-size: 7.5px;
 
-    top: 10px;
+            gap: 3px;
 
-    padding: 10px 12px;
-  }
+            margin-bottom: 9px;
 
-  .toast-icon {
+            letter-spacing: 0.025em;
+          }
 
-    width: 30px;
+          .product-material b {
+            margin: 0;
+          }
 
-    height: 30px;
-  }
 
-  .toast-title {
+          /* PRICE */
 
-    font-size: 11px;
-  }
+          .price-section {
+            margin-bottom: 10px;
+          }
 
-  .toast-text {
+          .price-main-row {
+            align-items: center;
 
-    font-size: 9px;
-  }
-}
+            gap: 5px;
+          }
 
-`}</style>
+          .price-wrap {
+            gap: 5px;
+          }
 
+          .price {
+            font-size: 16px;
+          }
+
+          .mrp {
+            font-size: 9px;
+          }
+
+          .price-discount {
+            font-size: 6.5px;
+
+            padding: 3px 5px;
+
+            letter-spacing: 0.04em;
+          }
+
+          .coupon-price {
+            font-size: 8.5px;
+
+            margin-top: 6px;
+
+            line-height: 1.25;
+          }
+
+
+          /* BUTTONS */
+
+          .btn-row {
+            grid-template-columns: 1fr 1fr;
+
+            gap: 6px;
+          }
+
+          .cart-btn,
+          .buy-btn {
+            height: 34px;
+
+            border-radius: 9px;
+
+            font-size: 8px;
+
+            letter-spacing: 0.02em;
+
+            padding: 0 4px;
+          }
+
+
+          /* DISCOUNT */
+
+          .discount-badge {
+            top: 8px;
+
+            left: 8px;
+
+            padding: 4px 8px;
+
+            font-size: 7px;
+          }
+
+
+          /* TOAST */
+
+          .lux-toast {
+            left: 10px;
+
+            right: 10px;
+
+            top: 10px;
+
+            padding: 10px 12px;
+          }
+
+          .toast-icon {
+            width: 30px;
+
+            height: 30px;
+          }
+
+          .toast-title {
+            font-size: 11px;
+          }
+
+          .toast-text {
+            font-size: 9px;
+          }
+
+        }
+
+
+        /* =================================
+           VERY SMALL PHONES
+        ================================= */
+
+        @media (max-width: 380px) {
+
+          .card-content {
+            padding: 9px;
+          }
+
+          .product-title {
+            font-size: 15px;
+          }
+
+          .product-material {
+            font-size: 7px;
+          }
+
+          .price {
+            font-size: 15px;
+          }
+
+          .mrp {
+            font-size: 8px;
+          }
+
+          .price-discount {
+            font-size: 6px;
+
+            padding: 3px 4px;
+          }
+
+          .coupon-price {
+            font-size: 8px;
+          }
+
+          .cart-btn,
+          .buy-btn {
+            font-size: 7.5px;
+
+            height: 33px;
+          }
+
+        }
+
+      `}</style>
     </>
   );
 }
