@@ -74,8 +74,8 @@ export default function Header() {
             <Image
               src="/logo.png"
               alt="SIVAAH 925 Fine Silver Jewels"
-              width={120}
-              height={40}
+              width={130}
+              height={50}
               priority
               className="sivaah-logo"
             />
