@@ -586,25 +586,144 @@ export default function CategoryPage({
   );
 }
 
-export async function getServerSideProps({
-  params
-}) {
+/* ========================================================================
+   STATIC / ISR CATEGORY PAGES
+
+   SEO + GEO SAFE:
+   - Category pages remain crawlable
+   - Full product HTML is generated server-side
+   - Canonical/title/description remain unchanged
+   - Pages are cached instead of hitting the backend on every navigation
+   - Catalogue refreshes every 5 minutes
+======================================================================== */
+
+
+export async function getStaticPaths() {
 
   try {
 
+    const categoriesRes = await fetch(
+      "https://sivaahbackend.onrender.com/api/categories"
+    );
+
+    if (!categoriesRes.ok) {
+
+      return {
+        paths: [],
+        fallback: "blocking"
+      };
+
+    }
+
+    const categoriesData =
+      await categoriesRes.json();
+
+    const categories =
+      Array.isArray(categoriesData)
+        ? categoriesData
+        : Array.isArray(categoriesData?.categories)
+          ? categoriesData.categories
+          : [];
+
+
+    const paths = categories
+      .map(item =>
+        typeof item === "string"
+          ? item
+          : item?.name
+      )
+      .filter(Boolean)
+      .map(name => ({
+        params: {
+          category: name
+        }
+      }));
+
+
+    return {
+
+      paths,
+
+      /*
+       * If a category was not generated at build time,
+       * Next.js generates it on the first request.
+       */
+      fallback: "blocking"
+
+    };
+
+
+  } catch (error) {
+
+    console.error(
+      "Category getStaticPaths failed:",
+      error
+    );
+
+    return {
+
+      paths: [],
+
+      fallback: "blocking"
+
+    };
+
+  }
+
+}
+
+
+
+export async function getStaticProps({
+  params
+}) {
+
+  const category =
+    String(
+      params?.category || ""
+    ).trim();
+
+
+  /*
+   * Invalid category
+   */
+  if (!category) {
+
+    return {
+      notFound: true,
+      revalidate: 300
+    };
+
+  }
+
+
+  try {
+
+
+    /*
+     * Fetch everything required for the category page
+     * in parallel.
+     */
     const [
+
       productsRes,
+
       featuredRes,
+
       categoriesRes
+
     ] = await Promise.all([
 
+
       fetch(
-        `https://sivaahbackend.onrender.com/api/products/paginated?category=${params.category}&limit=12`
+        `https://sivaahbackend.onrender.com/api/products/paginated?category=${encodeURIComponent(category)}&limit=12`
       ),
+
 
       fetch(
         "https://sivaahbackend.onrender.com/api/products/featured"
       ),
+
 
       fetch(
         "https://sivaahbackend.onrender.com/api/categories"
@@ -612,48 +731,172 @@ export async function getServerSideProps({
 
     ]);
 
+
+
+    /*
+     * Make sure all required APIs succeeded.
+     */
+    if (
+      !productsRes.ok ||
+      !featuredRes.ok ||
+      !categoriesRes.ok
+    ) {
+
+      throw new Error(
+        "Category API request failed"
+      );
+
+    }
+
+
+
     const productsData =
       await productsRes.json();
+
 
     const featuredData =
       await featuredRes.json();
 
+
     const categoriesData =
       await categoriesRes.json();
 
+
+
+    /*
+     * Normalise API responses.
+     */
+
+    const products =
+      Array.isArray(
+        productsData?.products
+      )
+        ? productsData.products
+        : [];
+
+
+    const featuredProducts =
+      Array.isArray(
+        featuredData
+      )
+        ? featuredData
+        : [];
+
+
+    const categories =
+      Array.isArray(
+        categoriesData
+      )
+        ? categoriesData
+        : Array.isArray(
+            categoriesData?.categories
+          )
+          ? categoriesData.categories
+          : [];
+
+
+
+    /*
+     * IMPORTANT FOR SEO
+     *
+     * Do not allow random URLs such as:
+     *
+     * /collections/abcxyz
+     *
+     * to become thin indexable pages.
+     */
+    const categoryExists =
+      categories.some(
+        item => {
+
+          const name =
+            typeof item === "string"
+              ? item
+              : item?.name || "";
+
+          return (
+            String(name).toLowerCase() ===
+            category.toLowerCase()
+          );
+
+        }
+      );
+
+
+    if (!categoryExists) {
+
+      return {
+
+        notFound: true,
+
+        revalidate: 300
+
+      };
+
+    }
+
+
+
     return {
 
       props: {
 
-        category:
-          params.category,
+        category,
 
-        products:
-          productsData.products || [],
+        products,
 
-        featuredProducts:
-          featuredData || [],
+        featuredProducts,
 
-        categories:
-          categoriesData || []
-      }
+        categories
+
+      },
+
+
+      /*
+       * ISR
+       *
+       * The generated page stays cached.
+       * Next.js can regenerate it after 5 minutes
+       * when traffic reaches it.
+       */
+      revalidate: 300
+
     };
 
-  } catch {
 
+  } catch (error) {
+
+
+    console.error(
+      "Category getStaticProps failed:",
+      error
+    );
+
+
+    /*
+     * If generation fails, don't deliberately
+     * create a 404 for a real category.
+     *
+     * Next can retry during the next revalidation.
+     */
     return {
 
       props: {
 
-        category:
-          params.category,
+        category,
 
         products: [],
 
         featuredProducts: [],
 
         categories: []
-      }
+
+      },
+
+      revalidate: 60
+
     };
+
   }
+
 }

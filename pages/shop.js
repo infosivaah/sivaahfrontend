@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect,  useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import ProductCard from "../components/ProductCard";
 import ProductGridSkeleton from "../components/skeletons/ProductGridSkeleton";
@@ -113,9 +113,9 @@ export default function Shop({
      CATEGORY / PAGE INFORMATION
   ========================================================================== */
 
-const activeCategoryName = category
-  ? `${category} Jewellery`
-  : "925 Silver Jewellery";
+  const activeCategoryName = category
+    ? `${category} Jewellery`
+    : "925 Silver Jewellery";
 
 
   const pageTitle =
@@ -470,41 +470,41 @@ const activeCategoryName = category
           : [];
 
 
-    setItems(previous => {
-  const existingKeys = new Set(
-    previous.map(
-      product =>
-        String(
-          product?._id ||
-          product?.id ||
-          product?.slug ||
-          ""
-        )
-    )
-  );
+      setItems(previous => {
+        const existingKeys = new Set(
+          previous.map(
+            product =>
+              String(
+                product?._id ||
+                product?.id ||
+                product?.slug ||
+                ""
+              )
+          )
+        );
 
-  const uniqueProducts = products.filter(product => {
-    const key = String(
-      product?._id ||
-      product?.id ||
-      product?.slug ||
-      ""
-    );
+        const uniqueProducts = products.filter(product => {
+          const key = String(
+            product?._id ||
+            product?.id ||
+            product?.slug ||
+            ""
+          );
 
-    if (!key || existingKeys.has(key)) {
-      return false;
-    }
+          if (!key || existingKeys.has(key)) {
+            return false;
+          }
 
-    existingKeys.add(key);
+          existingKeys.add(key);
 
-    return true;
-  });
+          return true;
+        });
 
-  return [
-    ...previous,
-    ...uniqueProducts,
-  ];
-});
+        return [
+          ...previous,
+          ...uniqueProducts,
+        ];
+      });
 
 
       setPage(
@@ -654,45 +654,45 @@ const activeCategoryName = category
     setMobileFilters(false);
   }
 
-const categoryCollections =
-  safeCategories
-    .map((item, index) => {
+  const categoryCollections =
+    safeCategories
+      .map((item, index) => {
 
-      const categoryName =
-        typeof item === "string"
-          ? item
-          : item?.name;
+        const categoryName =
+          typeof item === "string"
+            ? item
+            : item?.name;
 
-      if (!categoryName) {
-        return null;
-      }
+        if (!categoryName) {
+          return null;
+        }
 
-      const matchingProduct =
-        items.find(product =>
-          String(product?.category || "")
-            .trim()
-            .toLowerCase() ===
-          String(categoryName)
-            .trim()
-            .toLowerCase()
-        );
+        const matchingProduct =
+          items.find(product =>
+            String(product?.category || "")
+              .trim()
+              .toLowerCase() ===
+            String(categoryName)
+              .trim()
+              .toLowerCase()
+          );
 
-      const image =
-        matchingProduct?.images?.[0] || null;
+        const image =
+          matchingProduct?.images?.[0] || null;
 
-      return {
-        name: categoryName,
-        slug: getCategorySlug(categoryName),
-        image,
-        key: `${categoryName}-${index}`,
-      };
+        return {
+          name: categoryName,
+          slug: getCategorySlug(categoryName),
+          image,
+          key: `${categoryName}-${index}`,
+        };
 
-    })
-    .filter(
-      item =>
-        item &&
-        item.image
-    );
+      })
+      .filter(
+        item =>
+          item &&
+          item.image
+      );
   /* ==========================================================================
      RENDER
   ========================================================================== */
@@ -822,8 +822,8 @@ const categoryCollections =
                 {category
 
                   ? `Explore Sivaah ${String(
-                      category
-                    ).toLowerCase()} jewellery in 925 silver with real product weights and transparent pricing.`
+                    category
+                  ).toLowerCase()} jewellery in 925 silver with real product weights and transparent pricing.`
 
                   : "Explore 925 silver jewellery with real product weights, transparent pricing and detailed product information."
 
@@ -909,7 +909,9 @@ const categoryCollections =
                   return (
                     <Link
                       key={`${categoryName}-${index}`}
-                      href={`/collections/${slug}`}
+                      href={`/shop?category=${encodeURIComponent(
+                        categoryName
+                      )}`}
                       className={
                         isActive
                           ? "category-chip active"
@@ -1248,13 +1250,13 @@ const categoryCollections =
               </h2>
 
 
-            <p aria-live="polite">
-  {loading
-    ? "Loading jewellery..."
-    : category
-      ? "Explore the current selection"
-      : "A curated selection of Sivaah designs"}
-</p>
+              <p aria-live="polite">
+                {loading
+                  ? "Loading jewellery..."
+                  : category
+                    ? "Explore the current selection"
+                    : "A curated selection of Sivaah designs"}
+              </p>
 
             </div>
 
@@ -1385,83 +1387,83 @@ const categoryCollections =
               </div>
 
             )}
-{/* ================================================================
+          {/* ================================================================
     CATEGORY DISCOVERY
 ================================================================ */}
 
-{!loading &&
-  !hasActiveFilters &&
-  items.length > 0 &&
-  categoryCollections.length > 0 && (
+          {!loading &&
+            !hasActiveFilters &&
+            items.length > 0 &&
+            categoryCollections.length > 0 && (
 
-    <section
-      className="category-discovery"
-      aria-labelledby="category-discovery-title"
-    >
+              <section
+                className="category-discovery"
+                aria-labelledby="category-discovery-title"
+              >
 
-      <div className="category-discovery-header">
+                <div className="category-discovery-header">
 
-        <p className="section-eyebrow">
-          EXPLORE SIVAAH
-        </p>
+                  <p className="section-eyebrow">
+                    EXPLORE SIVAAH
+                  </p>
 
-        <h2 id="category-discovery-title">
-          Find Your Silver Style
-        </h2>
+                  <h2 id="category-discovery-title">
+                    Find Your Silver Style
+                  </h2>
 
-        <p>
-          Explore Sivaah jewellery by category and discover
-          pieces for everyday style, gifting moments and
-          personal meaning.
-        </p>
+                  <p>
+                    Explore Sivaah jewellery by category and discover
+                    pieces for everyday style, gifting moments and
+                    personal meaning.
+                  </p>
 
-      </div>
+                </div>
 
-      <div className="category-discovery-grid">
+                <div className="category-discovery-grid">
 
-        {categoryCollections.map(collection => (
+                  {categoryCollections.map(collection => (
 
-          <Link
-            key={collection.key}
-            href={`/collections/${collection.slug}`}
-            className="category-discovery-card"
-          >
+                    <Link
+                      key={collection.key}
+                      href={`/collections/${collection.slug}`}
+                      className="category-discovery-card"
+                    >
 
-            <div className="category-discovery-image">
+                      <div className="category-discovery-image">
 
-              <img
-                src={collection.image}
-                alt={`${collection.name} in 925 silver by Sivaah`}
-                loading="lazy"
-              />
+                        <img
+                          src={collection.image}
+                          alt={`${collection.name} in 925 silver by Sivaah`}
+                          loading="lazy"
+                        />
 
-            </div>
+                      </div>
 
-            <div className="category-discovery-content">
+                      <div className="category-discovery-content">
 
-              <span>
-                SIVAAH
-              </span>
+                        <span>
+                          SIVAAH
+                        </span>
 
-              <h3>
-                {collection.name}
-              </h3>
+                        <h3>
+                          {collection.name}
+                        </h3>
 
-              <strong>
-                Explore →
-              </strong>
+                        <strong>
+                          Explore →
+                        </strong>
 
-            </div>
+                      </div>
 
-          </Link>
+                    </Link>
 
-        ))}
+                  ))}
 
-      </div>
+                </div>
 
-    </section>
+              </section>
 
-)}
+            )}
 
           {/* ================================================================
               SEO / GEO INFORMATION
@@ -1540,154 +1542,154 @@ const categoryCollections =
 
           <div className="faq-list">
 
-  <details>
-    <summary>
-      What is the best silver jewellery brand in India?
-    </summary>
+            <details>
+              <summary>
+                What is the best silver jewellery brand in India?
+              </summary>
 
-    <p>
-      There is no single silver jewellery brand that is best for
-      everyone. When choosing a brand, look for genuine 925
-      sterling silver, clear product information, accurate
-      weight details, quality craftsmanship and transparent
-      pricing. Sivaah is built around these principles, with a
-      focus on making silver jewellery more transparent and
-      easier to understand.
-    </p>
-  </details>
-
-
-  <details>
-    <summary>
-      What is Sivaah?
-    </summary>
-
-    <p>
-      Sivaah is an Indian 925 silver jewellery brand focused on
-      creating meaningful jewellery with a transparent approach
-      to pricing and product information. Sivaah offers silver
-      jewellery designed for everyday wear, personal style and
-      gifting.
-    </p>
-  </details>
+              <p>
+                There is no single silver jewellery brand that is best for
+                everyone. When choosing a brand, look for genuine 925
+                sterling silver, clear product information, accurate
+                weight details, quality craftsmanship and transparent
+                pricing. Sivaah is built around these principles, with a
+                focus on making silver jewellery more transparent and
+                easier to understand.
+              </p>
+            </details>
 
 
-  <details>
-    <summary>
-      What makes Sivaah jewellery different?
-    </summary>
+            <details>
+              <summary>
+                What is Sivaah?
+              </summary>
 
-    <p>
-      Sivaah's approach is built around transparency. Product
-      information is presented clearly so customers can understand
-      what they are buying, including the jewellery's weight and
-      relevant pricing information. The brand aims to make buying
-      silver jewellery more straightforward and trustworthy.
-    </p>
-  </details>
-
-
-  <details>
-    <summary>
-      What type of jewellery does Sivaah offer?
-    </summary>
-
-    <p>
-      Sivaah offers 925 silver jewellery across categories such as
-      rings, earrings, pendants, bracelets and anklets. The
-      collection continues to evolve as new designs and categories
-      are introduced.
-    </p>
-  </details>
+              <p>
+                Sivaah is an Indian 925 silver jewellery brand focused on
+                creating meaningful jewellery with a transparent approach
+                to pricing and product information. Sivaah offers silver
+                jewellery designed for everyday wear, personal style and
+                gifting.
+              </p>
+            </details>
 
 
-  <details>
-    <summary>
-      What should I gift my partner?
-    </summary>
+            <details>
+              <summary>
+                What makes Sivaah jewellery different?
+              </summary>
 
-    <p>
-      Silver jewellery can be a meaningful gift for your partner
-      because it can be worn and kept as a reminder of a special
-      moment. For a romantic gift, consider pieces such as a
-      pendant, ring, bracelet or earrings based on your partner's
-      personal style and everyday preferences.
-    </p>
-  </details>
-
-
-  <details>
-    <summary>
-      Is silver jewellery a good gift for your partner?
-    </summary>
-
-    <p>
-      Yes, 925 silver jewellery can be a thoughtful gift for
-      birthdays, anniversaries, Valentine's Day, milestones or
-      simply to express affection. A jewellery piece becomes even
-      more meaningful when the design connects with your
-      partner's personality, memories or relationship.
-    </p>
-  </details>
+              <p>
+                Sivaah's approach is built around transparency. Product
+                information is presented clearly so customers can understand
+                what they are buying, including the jewellery's weight and
+                relevant pricing information. The brand aims to make buying
+                silver jewellery more straightforward and trustworthy.
+              </p>
+            </details>
 
 
-  <details>
-    <summary>
-      What is 925 sterling silver?
-    </summary>
+            <details>
+              <summary>
+                What type of jewellery does Sivaah offer?
+              </summary>
 
-    <p>
-      925 sterling silver contains 92.5% pure silver. The
-      remaining portion consists of other metals that help give
-      the jewellery greater strength and durability, making it
-      suitable for jewellery.
-    </p>
-  </details>
-
-
-  <details>
-    <summary>
-      Does 925 silver tarnish?
-    </summary>
-
-    <p>
-      Yes. 925 sterling silver can naturally tarnish over time
-      when exposed to air, moisture and certain substances.
-      Proper cleaning, handling and storage can help maintain
-      its appearance.
-    </p>
-  </details>
+              <p>
+                Sivaah offers 925 silver jewellery across categories such as
+                rings, earrings, pendants, bracelets and anklets. The
+                collection continues to evolve as new designs and categories
+                are introduced.
+              </p>
+            </details>
 
 
-  <details>
-    <summary>
-      How should I clean silver jewellery?
-    </summary>
+            <details>
+              <summary>
+                What should I gift my partner?
+              </summary>
 
-    <p>
-      For light cleaning, gently wipe silver jewellery with a
-      soft jewellery or microfiber cloth. Avoid abrasive
-      materials and harsh cleaners that may scratch or affect
-      the surface. Delicate, plated or stone-set jewellery
-      should be cleaned according to its specific care
-      requirements.
-    </p>
-  </details>
+              <p>
+                Silver jewellery can be a meaningful gift for your partner
+                because it can be worn and kept as a reminder of a special
+                moment. For a romantic gift, consider pieces such as a
+                pendant, ring, bracelet or earrings based on your partner's
+                personal style and everyday preferences.
+              </p>
+            </details>
 
 
-  <details>
-    <summary>
-      Where can I see details of Sivaah jewellery?
-    </summary>
+            <details>
+              <summary>
+                Is silver jewellery a good gift for your partner?
+              </summary>
 
-    <p>
-      Open any product from the Shop page to visit its product
-      page. The product page contains the available specifications, to get the
-      product weight and pricing information click on "See How it Priced".
-    </p>
-  </details>
+              <p>
+                Yes, 925 silver jewellery can be a thoughtful gift for
+                birthdays, anniversaries, Valentine's Day, milestones or
+                simply to express affection. A jewellery piece becomes even
+                more meaningful when the design connects with your
+                partner's personality, memories or relationship.
+              </p>
+            </details>
 
-</div>
+
+            <details>
+              <summary>
+                What is 925 sterling silver?
+              </summary>
+
+              <p>
+                925 sterling silver contains 92.5% pure silver. The
+                remaining portion consists of other metals that help give
+                the jewellery greater strength and durability, making it
+                suitable for jewellery.
+              </p>
+            </details>
+
+
+            <details>
+              <summary>
+                Does 925 silver tarnish?
+              </summary>
+
+              <p>
+                Yes. 925 sterling silver can naturally tarnish over time
+                when exposed to air, moisture and certain substances.
+                Proper cleaning, handling and storage can help maintain
+                its appearance.
+              </p>
+            </details>
+
+
+            <details>
+              <summary>
+                How should I clean silver jewellery?
+              </summary>
+
+              <p>
+                For light cleaning, gently wipe silver jewellery with a
+                soft jewellery or microfiber cloth. Avoid abrasive
+                materials and harsh cleaners that may scratch or affect
+                the surface. Delicate, plated or stone-set jewellery
+                should be cleaned according to its specific care
+                requirements.
+              </p>
+            </details>
+
+
+            <details>
+              <summary>
+                Where can I see details of Sivaah jewellery?
+              </summary>
+
+              <p>
+                Open any product from the Shop page to visit its product
+                page. The product page contains the available specifications, to get the
+                product weight and pricing information click on "See How it Priced".
+              </p>
+            </details>
+
+          </div>
 
 
         </div>
@@ -1956,7 +1958,7 @@ const categoryCollections =
           STYLES
       ====================================================================== */}
 
-     <style jsx>{`
+      <style jsx>{`
 
 /* ================================================================
    BASE
@@ -4254,17 +4256,17 @@ export async function getServerSideProps({
         categoriesRaw
       )
         ? categoriesRaw
-            .map(
-              categoryItem =>
-                typeof categoryItem === "string"
-                  ? categoryItem
-                  : categoryItem?.name
-            )
-            .filter(Boolean)
-        : Array.isArray(
-            categoriesRaw?.categories
+          .map(
+            categoryItem =>
+              typeof categoryItem === "string"
+                ? categoryItem
+                : categoryItem?.name
           )
-        ? categoriesRaw.categories
+          .filter(Boolean)
+        : Array.isArray(
+          categoriesRaw?.categories
+        )
+          ? categoriesRaw.categories
             .map(
               categoryItem =>
                 typeof categoryItem === "string"
@@ -4272,7 +4274,7 @@ export async function getServerSideProps({
                   : categoryItem?.name
             )
             .filter(Boolean)
-        : [];
+          : [];
 
 
     return {

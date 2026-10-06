@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useCart } from "../../context/CartContext";
+import Head from "next/head";
 
 export default function Checkout() {
   const router = useRouter();

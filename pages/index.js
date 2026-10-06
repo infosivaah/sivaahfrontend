@@ -11,8 +11,8 @@ export default function Home({
   const heroImages = carousel?.length
     ? carousel
     : [
-        "https://res.cloudinary.com/dh61336lh/image/upload/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg",
-      ];
+      "https://res.cloudinary.com/dh61336lh/image/upload/v1771238437/WhatsApp_Image_2025-12-29_at_6.33.25_PM_2_hjxx2s.jpg",
+    ];
 
   return (
     <>
@@ -1183,7 +1183,7 @@ export default function Home({
 
 }
       `}</style>
-            {/* =========================================================
+      {/* =========================================================
           HERO
       ========================================================= */}
 
@@ -1447,9 +1447,10 @@ export default function Home({
 
               <Link
                 key={`large-${cat._id || cat.name || index}`}
-                href={`/shop?category=${encodeURIComponent(
-                  cat.name
+                href={`/collections/${encodeURIComponent(
+                  cat.name.toLowerCase()
                 )}`}
+
                 className="sivaah-category-card"
                 aria-label={`Shop ${cat.name} 925 silver jewellery`}
               >
