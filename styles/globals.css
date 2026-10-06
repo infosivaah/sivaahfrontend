@@ -916,3 +916,504 @@ body {
   }
 
 }
+/* =========================================================
+   SIVAAH REVIEW FORM
+========================================================= */
+
+.sivaah-review-form {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+
+/* =========================================================
+   FIELD
+========================================================= */
+
+.sivaah-review-field {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.sivaah-review-field > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  color: #1d1b18;
+
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+
+  text-transform: uppercase;
+}
+
+
+/* Optional label */
+
+.sivaah-review-field .optional {
+  color: #888;
+
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.sivaah-review-field input[type="text"],
+.sivaah-review-field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #d9d5cf;
+  border-radius: 0;
+
+  background: #fff;
+
+  color: #1d1b18;
+
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+
+  outline: none;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* Text input */
+
+.sivaah-review-field input[type="text"] {
+  min-height: 52px;
+  padding: 0 16px;
+}
+
+
+/* Textarea */
+
+.sivaah-review-field textarea {
+  min-height: 130px;
+  padding: 14px 16px;
+
+  resize: vertical;
+}
+
+
+/* Placeholder */
+
+.sivaah-review-field input::placeholder,
+.sivaah-review-field textarea::placeholder {
+  color: #aaa;
+
+  font-size: 13px;
+}
+
+
+/* Focus */
+
+.sivaah-review-field input[type="text"]:focus,
+.sivaah-review-field textarea:focus {
+  border-color: #1d1b18;
+
+  box-shadow: 0 0 0 1px #1d1b18;
+}
+
+
+/* Disabled */
+
+.sivaah-review-field input:disabled,
+.sivaah-review-field textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   STAR RATING
+========================================================= */
+
+.sivaah-star-selector {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+
+.sivaah-star {
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  border: 1px solid #d9d5cf;
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #c8c4be;
+
+  font-size: 18px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.sivaah-star:hover {
+  border-color: #efef07;
+  color: #efef07;
+
+  transform: translateY(-1px);
+}
+
+
+.sivaah-star.active {
+  border-color: #efef07;
+  background: #efef07;
+
+  color: #fff;
+}
+
+
+.sivaah-star:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   LIKE OPTIONS
+========================================================= */
+
+.sivaah-like-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+
+.sivaah-like-chip {
+  min-height: 42px;
+
+  padding: 0 16px;
+
+  border: 1px solid #d9d5cf;
+  border-radius: 999px;
+
+  background: #fff;
+
+  color: #3b3834;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.sivaah-like-chip:hover {
+  border-color: #1d1b18;
+
+  transform: translateY(-1px);
+}
+
+
+.sivaah-like-chip.selected {
+  border-color: #1d1b18;
+  background: #1d1b18;
+
+  color: #fff;
+}
+
+
+.sivaah-like-chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   PHOTO UPLOAD
+========================================================= */
+
+.sivaah-review-field input[type="file"] {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px;
+
+  border: 1px dashed #c9c4bc;
+
+  background: #faf9f7;
+
+  color: #555;
+
+  font-family: inherit;
+  font-size: 12px;
+
+  cursor: pointer;
+}
+
+
+.sivaah-review-field input[type="file"]:hover {
+  border-color: #1d1b18;
+}
+
+
+.sivaah-review-field > small {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #888;
+
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   PHOTO PREVIEW
+========================================================= */
+
+.sivaah-review-photo-list {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+
+.sivaah-review-photo {
+  position: relative;
+
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+
+  background: #f4f2ef;
+}
+
+
+.sivaah-review-photo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   CHARACTER COUNTER
+========================================================= */
+
+.sivaah-review-counter {
+  margin-top: 6px;
+
+  color: #999;
+
+  font-size: 10px;
+
+  text-align: right;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.sivaah-review-error {
+  margin-bottom: 20px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #e1caca;
+
+  background: #faf3f3;
+
+  color: #8a3d3d;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SUCCESS
+========================================================= */
+
+.sivaah-review-success {
+  margin-bottom: 20px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #d2d8cf;
+
+  background: #f5f7f3;
+
+  color: #465440;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.sivaah-review-submit {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 54px;
+
+  padding: 0 28px;
+
+  border: 1px solid #1d1b18;
+
+  border-radius: 0;
+
+  background: #1d1b18;
+
+  color: #fff;
+
+  font-family: inherit;
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.sivaah-review-submit:hover {
+  background: #fff;
+
+  color: #1d1b18;
+
+  transform: translateY(-1px);
+}
+
+
+.sivaah-review-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .sivaah-review-form {
+    max-width: 100%;
+  }
+
+
+  .sivaah-review-field {
+    margin-bottom: 24px;
+  }
+
+
+  .sivaah-review-field > label {
+    font-size: 10px;
+  }
+
+
+  .sivaah-review-field input[type="text"] {
+    min-height: 50px;
+
+    font-size: 13px;
+  }
+
+
+  .sivaah-review-field textarea {
+    min-height: 120px;
+
+    font-size: 13px;
+  }
+
+
+  .sivaah-star {
+    width: 36px;
+    height: 36px;
+
+    font-size: 17px;
+  }
+
+
+  .sivaah-like-options {
+    gap: 7px;
+  }
+
+
+  .sivaah-like-chip {
+    min-height: 40px;
+
+    padding: 0 13px;
+
+    font-size: 10px;
+  }
+
+
+  .sivaah-review-photo-list {
+    gap: 8px;
+  }
+
+
+  .sivaah-review-submit {
+    min-height: 52px;
+  }
+}
