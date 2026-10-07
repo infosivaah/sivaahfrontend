@@ -1,5 +1,5 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 const API_URL = "https://sivaahbackend.onrender.com";
 
 const CLOUDINARY_CLOUD_NAME = "df67hp5yk";
@@ -38,6 +38,8 @@ export default function ReviewForm({
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
 
   const [error, setError] = useState("");
+
+const router = useRouter();
 
 
   /* =========================================================
@@ -422,13 +424,36 @@ export default function ReviewForm({
 
   };
 
+useEffect(() => {
+  if (!router.isReady) return;
 
+  const channelFromUrl = router.query.channel;
+
+  if (typeof channelFromUrl === "string") {
+    setChannel(channelFromUrl);
+  }
+}, [router.isReady, router.query.channel]);
+const displayChannel =
+  channel && channel.trim()
+    ? channel.trim()
+    : "SIVAAH Review";
   return (
 
     <form
       onSubmit={handleSubmit}
       className="sivaah-review-form"
     >
+  <div className="sivaah-review-heading" style={{color:"rgb(184, 139, 74)"}}>
+
+    <h1>
+      {displayChannel}
+    </h1>
+
+    {displayChannel !== "SIVAAH Review" && (
+      <p>SIVAAH Review</p>
+    )}
+
+  </div>
 
 
       {/* =====================================================
