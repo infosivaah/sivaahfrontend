@@ -13,7 +13,7 @@ const SITE_URL =
   "https://www.sivaah.in";
 
 const SHOP_URL =
-  `${SITE_URL}/shop`;
+  `${SITE_URL}/alldesigns`;
 
 
 /* ============================================================================
@@ -600,8 +600,8 @@ export default function Shop({
 
     router.push(
       queryString
-        ? `/shop?${queryString}`
-        : "/shop",
+        ? `/alldesigns?${queryString}`
+        : "/alldesigns",
       undefined,
       {
         shallow: true,
@@ -642,7 +642,7 @@ export default function Shop({
 
 
     router.push(
-      "/shop",
+      "/alldesigns",
       undefined,
       {
         shallow: true,
@@ -868,7 +868,7 @@ export default function Shop({
               {/* ALL */}
 
               <Link
-                href="/shop"
+                href="/alldesigns"
                 className={
                   !category
                     ? "category-chip active"
@@ -909,7 +909,7 @@ export default function Shop({
                   return (
                     <Link
                       key={`${categoryName}-${index}`}
-                      href={`/shop?category=${encodeURIComponent(
+                      href={`/alldesigns?category=${encodeURIComponent(
                         categoryName
                       )}`}
                       className={

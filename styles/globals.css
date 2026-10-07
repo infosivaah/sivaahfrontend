@@ -1184,7 +1184,8 @@ body {
   cursor: pointer;
 }
 
-
+ .sivaah-review-field{
+  margin-top:10px;}
 .sivaah-review-field input[type="file"]:hover {
   border-color: #1d1b18;
 }
@@ -1364,6 +1365,7 @@ body {
 
   .sivaah-review-field {
     margin-bottom: 24px;
+    margin-top:10px;
   }
 
 
